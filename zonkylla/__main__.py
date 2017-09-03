@@ -24,10 +24,13 @@ import pkg_resources
 from .zonky import Zonky
 
 
-def main(args):
+def main():
     """
     Entry point
     """
+    args = docopt(
+        __doc__,
+        version=pkg_resources.require('zonkylla')[0].version)
 
     username = args['<user>']
     password = None
@@ -51,7 +54,4 @@ def main(args):
 
 
 if __name__ == '__main__':
-    ARGS = docopt(
-        __doc__,
-        version=pkg_resources.require('zonkylla')[0].version)
-    main(ARGS)
+    main()
