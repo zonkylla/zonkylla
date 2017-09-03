@@ -12,7 +12,7 @@ Usage
     $ virtualenv-3.6 venv
     $ source venv/bin/activate
     $ python setup.py install
-    $ python -m zonkylla
+    $ zonkylla
     $ deactivate
     ```
 
