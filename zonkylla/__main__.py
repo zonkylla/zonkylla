@@ -5,7 +5,7 @@
 
 """zonkylla
 Usage:
-  zonkylla.py
+  zonkylla.py <user>
   zonkylla.py (-h | --help)
   zonkylla.py --version
 Options:
@@ -13,15 +13,34 @@ Options:
  --version     Show version.
 """
 
+
+import os
+import getpass
+import sys
 from docopt import docopt
 import pkg_resources
+
+from .zonky import Zonky
 
 
 def main(args):
     """
     Entry point
     """
-    print(args)
+
+    username = args['<user>']
+    password = None
+    try:
+        password = os.environ['ZONKYLLA_PASSWORD']
+    except KeyError:
+        if sys.stdin.isatty():
+            password = getpass.getpass('Password: ')
+        else:
+            password = sys.stdin.readline().rstrip()
+
+    print(username, 'password is provided' if password else 'password is not provided')
+
+    zonky = Zonky(username, password)
 
 
 if __name__ == '__main__':

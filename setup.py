@@ -15,12 +15,15 @@
 
 from setuptools import setup, find_packages
 
+
 setup(
-    name="zonkylla",
+    name='zonkylla',
     description='Tool for zonky.cz',
-    version="0.0.1",
-    author="celestian",
+    version='0.0.1',
+    author='celestian',
     license='GPLv3',
+    url='https://github.com/celestian/zonkylla',
+
 
     packages=find_packages(),
     entry_points={
@@ -30,6 +33,7 @@ setup(
     },
     install_requires=[
         'docopt',
+        'urllib3[secure]'
     ],
     setup_requires=['pytest-runner'],
     tests_require=['pytest']
