@@ -5,10 +5,9 @@
 
 import datetime
 import json
-import certifi
 import pkg_resources
 
-import urllib3
+import requests
 
 
 class Token(object):
@@ -27,14 +26,11 @@ class Zonky(object):
 
         user_agent = 'zonkylla/{} (https://github.com/celestian/zonkylla)'.format(
             pkg_resources.require('zonkylla')[0].version)
-        http = urllib3.PoolManager(
-            cert_reqs='CERT_REQUIRED',
-            ca_certs=certifi.where(),
-            headers=user_agent)
 
         headers = {
             'Content-Type': 'application/x-www-form-urlencoded',
-            'Authorization': 'Basic d2ViOndlYg=='
+            'Authorization': 'Basic d2ViOndlYg==',
+            'User-Agent': user_agent,
         }
 
         payload = {
@@ -45,11 +41,7 @@ class Zonky(object):
 
         request_url = '{}/oauth/token'.format(url)
 
-        response = http.request_encode_url(
-            'POST',
-            request_url,
-            headers=headers,
-            fields=payload)
-        if response.status == 200:
-            data = json.loads(response.data.decode('utf-8'))
+        response = requests.post(request_url, data=payload, headers=headers)
+        if response.status_code == requests.codes.ok:  # pylint: disable=no-member
+            data = response.json()
             print(json.dumps(data, sort_keys=True, indent=2))
