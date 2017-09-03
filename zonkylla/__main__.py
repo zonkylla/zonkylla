@@ -51,6 +51,7 @@ def main():
         url = 'https://api.zonky.cz'
 
     zonky = Zonky(url, username, password)
+    zonky.hello()
 
 
 if __name__ == '__main__':

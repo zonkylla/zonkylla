@@ -24,17 +24,14 @@ class Token(metaclass=Singleton):
         self._password = password
 
         self._access_token = None
-        self._expires_in = None
         self._refresh_token = None
         self._scope = None
         self._token_type = None
-
-        # just testing
-        self._get_token(login=True)
-        time.sleep(10)
-        self._get_token()
+        self._valid_until = 0
 
     def _get_token(self, login=False):
+
+        now = datetime.datetime.now()
 
         headers = {
             'Content-Type': 'application/x-www-form-urlencoded',
@@ -42,8 +39,7 @@ class Token(metaclass=Singleton):
             'User-Agent': user_agent,
         }
 
-        payload = {
-            'scope': 'SCOPE_APP_WEB'}
+        payload = {'scope': 'SCOPE_APP_WEB'}
 
         if login:
             payload['username'] = self._username
@@ -59,21 +55,37 @@ class Token(metaclass=Singleton):
 
         if response.status_code == requests.codes.ok:  # pylint: disable=no-member
             data = response.json()
-            print(json.dumps(data, sort_keys=True, indent=2))
         else:
             response.raise_for_status()
 
         self._access_token = data['access_token']
-        self._expires_in = data['expires_in']
         self._refresh_token = data['refresh_token']
         self._scope = data['scope']
         self._token_type = ['token_type']
+        self._valid_until = now + \
+            datetime.timedelta(seconds=data['expires_in'] - 3)
+
+    @property
+    def token(self):
+        now = datetime.datetime.now()
+
+        if not self._access_token:
+            self._get_token(login=True)
+            return self.token
+
+        if now < self._valid_until:
+            return self._access_token
+        else:
+            self._get_token()
+            return self.token
 
 
-class Zonky(object):
+class Zonky(Token):
 
     def __init__(self, url, username, password):
+        Token.__init__(self, url, username, password)
 
-        Token(url, username, password)
+    def hello(self):
+        print(self.token)
 
         # print(json.dumps(data, sort_keys=True, indent=2))
