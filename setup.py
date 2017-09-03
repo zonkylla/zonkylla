@@ -34,6 +34,7 @@ setup(
     install_requires=[
         'docopt',
         'requests',
+        'singleton3',
     ],
     setup_requires=['pytest-runner'],
     tests_require=['pytest']
