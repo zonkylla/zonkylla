@@ -5,10 +5,11 @@
 
 """zonkylla
 Usage:
-  zonkylla.py <user>
+  zonkylla.py [-t] <user>
   zonkylla.py (-h | --help)
   zonkylla.py --version
 Options:
+ -t            Connect to mock server.
  -h --help     Show this screen.
  --version     Show version.
 """
@@ -40,7 +41,13 @@ def main(args):
 
     print(username, 'password is provided' if password else 'password is not provided')
 
-    zonky = Zonky(username, password)
+    url = None
+    if args['-t']:
+        url = 'https://private-anon-212b7e4eaf-zonky.apiary-mock.com'
+    else:
+        url = 'https://api.zonky.cz'
+
+    zonky = Zonky(url, username, password)
 
 
 if __name__ == '__main__':

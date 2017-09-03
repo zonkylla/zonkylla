@@ -15,3 +15,9 @@ Usage
     $ python -m zonkylla
     $ deactivate
     ```
+
+-   Testing run with mock
+
+    ``` bash
+    echo 'test' | python -m zonkylla -t test
+    ```

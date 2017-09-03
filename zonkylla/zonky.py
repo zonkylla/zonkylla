@@ -23,7 +23,7 @@ class Token(object):
 
 class Zonky(object):
 
-    def __init__(self, username, password):
+    def __init__(self, url, username, password):
 
         user_agent = 'zonkylla/{} (https://github.com/celestian/zonkylla)'.format(
             pkg_resources.require('zonkylla')[0].version)
@@ -43,9 +43,11 @@ class Zonky(object):
             'grant_type': 'password',
             'scope': 'SCOPE_APP_WEB'}
 
+        request_url = '{}/oauth/token'.format(url)
+
         response = http.request_encode_url(
             'POST',
-            'https://api.zonky.cz/oauth/token',
+            request_url,
             headers=headers,
             fields=payload)
         if response.status == 200:
