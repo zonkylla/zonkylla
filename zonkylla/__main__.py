@@ -5,11 +5,12 @@
 
 """zonkylla
 Usage:
-  zonkylla.py [-t] <user>
+  zonkylla.py [-t][-d] <user>
   zonkylla.py (-h | --help)
   zonkylla.py --version
 Options:
  -t            Connect to mock server.
+ -d            Debugging output.
  -h --help     Show this screen.
  --version     Show version.
 """
@@ -20,6 +21,7 @@ import getpass
 import sys
 from docopt import docopt
 import pkg_resources
+import logging
 
 from .zonky import Zonky
 
@@ -49,6 +51,9 @@ def main():
         url = 'https://private-anon-212b7e4eaf-zonky.apiary-mock.com'
     else:
         url = 'https://api.zonky.cz'
+
+    if args['-d']:
+        logging.basicConfig(level=logging.DEBUG)
 
     zonky = Zonky(url, username, password)
     zonky.hello()
