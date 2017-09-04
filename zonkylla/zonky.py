@@ -20,6 +20,7 @@ from requests.auth import HTTPBasicAuth
 
 
 class Client:
+
     def __init__(self, host, username, password):
         self._host = host
         self._client_id = 'web'
@@ -79,8 +80,12 @@ class Client:
 
 
 class Zonky:
+
     def __init__(self, host, username, password):
         self._client = Client(host, username, password)
 
+    def pretty_print(self, data):
+        print(json.dumps(data, sort_keys=True, indent=2))
+
     def hello(self):
-        print(self._client.get_wallet())
+        self.pretty_print(self._client.get_wallet())
