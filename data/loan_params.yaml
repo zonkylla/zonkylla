@@ -1,4 +1,4 @@
-- valid_from: 2016-01-01
+- valid_from: 2014-11-14
   AAAAA: {'interest':  3.99, 'risk': 0.49, 'investor_fee': 1.0}
   AAAA:  {'interest':  4.99, 'risk': 0.59, 'investor_fee': 1.0}
   AAA:   {'interest':  5.99, 'risk': 0.79, 'investor_fee': 1.0}
