@@ -34,6 +34,7 @@ setup(
         'docopt',
         'requests',
         'requests-oauthlib',
+        'pyyaml',
     ],
     setup_requires=['pytest-runner'],
     tests_require=['pytest']
