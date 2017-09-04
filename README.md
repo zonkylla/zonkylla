@@ -1,6 +1,8 @@
 zonkylla
 ========
 
+[![Code Climate](https://codeclimate.com/github/celestian/zonkylla/badges/gpa.svg)](https://codeclimate.com/github/celestian/zonkylla)
+
 Tool for zonky.cz
 
 Usage
