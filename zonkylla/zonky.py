@@ -7,7 +7,6 @@ import datetime
 import json
 import time
 import pkg_resources
-from singleton3 import Singleton
 
 import requests
 
@@ -15,77 +14,73 @@ user_agent = 'zonkylla/{} ({})'.format(
     pkg_resources.require('zonkylla')[0].version,
     'https://github.com/celestian/zonkylla')
 
+from oauthlib.oauth2 import LegacyApplicationClient
+from requests_oauthlib import OAuth2Session
+from requests.auth import HTTPBasicAuth
 
-class Token(metaclass=Singleton):
 
-    def __init__(self, url, username, password):
-        self._url = url
-        self._username = username
-        self._password = password
-
-        self._access_token = None
-        self._refresh_token = None
-        self._scope = None
-        self._token_type = None
-        self._valid_until = 0
-
-    def _get_token(self, login=False):
-
-        now = datetime.datetime.now()
-
-        headers = {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'Authorization': 'Basic d2ViOndlYg==',
+class Client:
+    def __init__(self, host, username, password):
+        self._host = host
+        self._client_id = 'web'
+        self._client_secret = 'web'
+        self._token_url = '{}/oauth/token'.format(self._host)
+        self._scope = ['SCOPE_APP_WEB']
+        self._headers = {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'User-Agent': user_agent,
+        }
+        self._token_headers = {
+            'Accept': 'application/json',
+            'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
             'User-Agent': user_agent,
         }
 
-        payload = {'scope': 'SCOPE_APP_WEB'}
+        auth = HTTPBasicAuth(self._client_id, self._client_secret)
 
-        if login:
-            payload['username'] = self._username
-            payload['password'] = self._password
-            payload['grant_type'] = 'password'
-        else:
-            payload['refresh_token'] = self._refresh_token
-            payload['grant_type'] = 'refresh_token'
+        client = LegacyApplicationClient(
+            client_id=self._client_id,
+        )
 
-        request_url = '{}/oauth/token'.format(self._url)
+        session = OAuth2Session(
+            client=client,
+            auto_refresh_url=self._token_url,
+            token_updater=self.token_saver,
+            scope=self._scope,
+        )
 
-        response = requests.post(request_url, data=payload, headers=headers)
+        session.fetch_token(
+            token_url=self._token_url,
+            username=username,
+            password=password,
+            scope=self._scope,
+            auth=auth,
+            headers=self._token_headers,
+        )
 
-        if response.status_code == requests.codes.ok:  # pylint: disable=no-member
-            data = response.json()
-        else:
-            response.raise_for_status()
+        self._session = session
 
-        self._access_token = data['access_token']
-        self._refresh_token = data['refresh_token']
-        self._scope = data['scope']
-        self._token_type = ['token_type']
-        self._valid_until = now + \
-            datetime.timedelta(seconds=data['expires_in'] - 3)
+    def token_saver(self, token):
+        self._session.token = token
 
-    @property
-    def token(self):
-        now = datetime.datetime.now()
+    def request(self, method, url, data=None):
+        return self._session.request(
+            method,
+            url,
+            data=data,
+            headers=self._headers,
+            client_id=self._client_id,
+            client_secret=self._client_secret)
 
-        if not self._access_token:
-            self._get_token(login=True)
-            return self.token
-
-        if now < self._valid_until:
-            return self._access_token
-        else:
-            self._get_token()
-            return self.token
+    def get_wallet(self):
+        url = '{}/users/me/wallet'.format(self._host)
+        return self.request('get', url).json()
 
 
-class Zonky(Token):
-
-    def __init__(self, url, username, password):
-        Token.__init__(self, url, username, password)
+class Zonky:
+    def __init__(self, host, username, password):
+        self._client = Client(host, username, password)
 
     def hello(self):
-        print(self.token)
-
-        # print(json.dumps(data, sort_keys=True, indent=2))
+        print(self._client.get_wallet())
