@@ -1,0 +1,18 @@
+- valid_from: 2016-01-01
+  AAAAA: {'interest':  3.99, 'risk': 0.49, 'investor_fee': 1.0}
+  AAAA:  {'interest':  4.99, 'risk': 0.59, 'investor_fee': 1.0}
+  AAA:   {'interest':  5.99, 'risk': 0.79, 'investor_fee': 1.0}
+  AA:    {'interest':  8.49, 'risk': 1.69, 'investor_fee': 1.0}
+  A:     {'interest': 10.99, 'risk': 2.59, 'investor_fee': 1.0}
+  B:     {'interest': 13.49, 'risk': 3.59, 'investor_fee': 1.0}
+  C:     {'interest': 15.49, 'risk': 4.59, 'investor_fee': 1.0}
+  D:     {'interest': 19.99, 'risk': 7.10, 'investor_fee': 1.0}
+- valid_from: 2017-09-01
+  AAAAA: {'interest':  3.99, 'risk': 0.49, 'investor_fee': 0.2}
+  AAAA:  {'interest':  4.99, 'risk': 0.59, 'investor_fee': 0.5}
+  AAA:   {'interest':  5.99, 'risk': 0.79, 'investor_fee': 1.0}
+  AA:    {'interest':  8.49, 'risk': 1.69, 'investor_fee': 2.5}
+  A:     {'interest': 10.99, 'risk': 2.59, 'investor_fee': 3.0}
+  B:     {'interest': 13.49, 'risk': 3.59, 'investor_fee': 3.5}
+  C:     {'interest': 15.49, 'risk': 4.59, 'investor_fee': 4.0}
+  D:     {'interest': 19.99, 'risk': 7.10, 'investor_fee': 5.0}
