@@ -6,4 +6,5 @@ The following people have contributed to the zonkylla project.
 
 -   Developers:
     -   Martin Bašti
+    -   Petr Blaho
     -   Petr Čech
