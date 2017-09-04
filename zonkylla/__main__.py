@@ -19,9 +19,9 @@ Options:
 import os
 import getpass
 import sys
+import logging
 from docopt import docopt
 import pkg_resources
-import logging
 
 from .zonky import Zonky
 

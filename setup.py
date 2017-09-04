@@ -24,7 +24,6 @@ setup(
     license='GPLv3',
     url='https://github.com/celestian/zonkylla',
 
-
     packages=find_packages(),
     entry_points={
         'console_scripts': [

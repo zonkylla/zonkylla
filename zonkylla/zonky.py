@@ -3,20 +3,17 @@
 #
 # Copyright (C) 2017  zonkylla Contributors see COPYING for license
 
-import datetime
 import json
-import time
 import pkg_resources
-
-import requests
-
-user_agent = 'zonkylla/{} ({})'.format(
-    pkg_resources.require('zonkylla')[0].version,
-    'https://github.com/celestian/zonkylla')
 
 from oauthlib.oauth2 import LegacyApplicationClient
 from requests_oauthlib import OAuth2Session
 from requests.auth import HTTPBasicAuth
+
+
+user_agent = 'zonkylla/{} ({})'.format(
+    pkg_resources.require('zonkylla')[0].version,
+    'https://github.com/celestian/zonkylla')
 
 
 class Client:
