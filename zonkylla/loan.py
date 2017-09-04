@@ -37,12 +37,12 @@ class LoanParams(object):
         period = None
         time_diff = float("inf")
 
-        for d in self.valid_dates:
+        for dat in self.valid_dates:
             actual_date = datetime.strptime(date, '%Y-%m-%d').date()
-            actual_diff = (actual_date - d).total_seconds()
+            actual_diff = (actual_date - dat).total_seconds()
             if (actual_diff >= 0) and actual_diff < time_diff:
                 time_diff = actual_diff
-                period = d
+                period = dat
 
         for param in self.params:
             if param['valid_from'] == period:
