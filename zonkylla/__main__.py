@@ -5,7 +5,7 @@
 
 """zonkylla
 Usage:
-  zonkylla.py [-t][-d] <user>
+  zonkylla.py [-t] [-d] <user>
   zonkylla.py (-h | --help)
   zonkylla.py --version
 Options:
