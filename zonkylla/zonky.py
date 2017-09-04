@@ -11,7 +11,7 @@ from requests_oauthlib import OAuth2Session
 from requests.auth import HTTPBasicAuth
 
 
-user_agent = 'zonkylla/{} ({})'.format(
+USER_AGENT = 'zonkylla/{} ({})'.format(
     pkg_resources.require('zonkylla')[0].version,
     'https://github.com/celestian/zonkylla')
 
@@ -27,12 +27,12 @@ class Client:
         self._headers = {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
-            'User-Agent': user_agent,
+            'User-Agent': USER_AGENT,
         }
         self._token_headers = {
             'Accept': 'application/json',
             'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
-            'User-Agent': user_agent,
+            'User-Agent': USER_AGENT,
         }
 
         auth = HTTPBasicAuth(self._client_id, self._client_secret)
