@@ -5,6 +5,11 @@ zonkylla
 
 Tool for zonky.cz
 
+Preparation
+----------
+
+-   [Fedora 26](doc/prepare_f26.md)
+
 Usage
 -----
 
