@@ -23,3 +23,8 @@ Usage
     ``` bash
     echo 'test' | python -m zonkylla -t test
     ```
+
+Resources
+---------
+
+- http://pre-commit.com/

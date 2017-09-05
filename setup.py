@@ -31,6 +31,7 @@ setup(
         ]
     },
     install_requires=[
+        'pre-commit>=0.12.0',
         'docopt',
         'requests',
         'requests-oauthlib',
