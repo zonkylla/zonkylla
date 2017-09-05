@@ -3,26 +3,21 @@
 #
 # Copyright (C) 2017  zonkylla Contributors see COPYING for license
 
-from enum import Enum
+"""Everything about loans"""
+
 from datetime import datetime
 import yaml
 
 
-class Rating(Enum):
-    AAAAA = 1
-    AAAA = 2
-    AAA = 3
-    AA = 4
-    A = 5
-    B = 6
-    C = 7
-    D = 8
-
-
 class LoanParams(object):
+    """Representaion of Loan Parameters"""
+
     loan_params_file = "./data/loan_params.yaml"
 
     def __init__(self):
+        """
+
+        """
         with open(self.loan_params_file, 'r') as stream:
             try:
                 self.params = yaml.load(stream)
@@ -34,6 +29,12 @@ class LoanParams(object):
             self.valid_dates.append(param['valid_from'])
 
     def get_params(self, date, rating):
+        """
+
+        :param date:
+        :param rating:
+        :return:
+        """
         period = None
         time_diff = float("inf")
 
@@ -50,9 +51,17 @@ class LoanParams(object):
 
 
 class Loan(object):
+    """Representaion of Loan"""
 
     def __init__(self, rating, start_date, debt, repayment_period):
-        self.rating = self._rating(rating)
+        """
+
+        :param rating:
+        :param start_date:
+        :param debt:
+        :param repayment_period:
+        """
+        self.rating = rating
         self.start_date = start_date
         self.debt = debt
         self.repayment_period = repayment_period
@@ -63,25 +72,3 @@ class Loan(object):
             repayment_period / 12.0)
 
         print(self.total_installment)
-
-    def _rating(self, rating):
-        if rating == 'A**':
-            return Rating.AAAAA
-        if rating == 'A*':
-            return Rating.AAAA
-        if rating == 'A++':
-            return Rating.AAA
-        if rating == 'A+':
-            return Rating.AA
-        if rating == 'A':
-            return Rating.A
-        if rating == 'B':
-            return Rating.B
-        if rating == 'C':
-            return Rating.C
-        if rating == 'D':
-            return Rating.D
-
-        #        installment
-        #        loss
-        #        charge

@@ -3,6 +3,9 @@
 #
 # Copyright (C) 2017  zonkylla Contributors see COPYING for license
 
+'''Zonky clients module'''
+
+
 import json
 import pkg_resources
 
@@ -16,9 +19,15 @@ USER_AGENT = 'zonkylla/{} ({})'.format(
     'https://github.com/celestian/zonkylla')
 
 
-class Client:
+class Client:  # pylint: disable=too-many-instance-attributes
+    """OAuth Client for Zonky"""
 
     def __init__(self, host, username, password):
+        """OAuth Client
+        :param host: URL of Zonky
+        :param username: Username of Zonky user
+        :param password: Password of Zonky user
+        """
         self._host = host
         self._client_id = 'web'
         self._client_secret = 'web'
@@ -60,9 +69,21 @@ class Client:
         self._session = session
 
     def token_saver(self, token):
+        """
+
+        :param token:
+        :return:
+        """
         self._session.token = token
 
     def request(self, method, url, data=None):
+        """Method for sending of request to Zonky
+
+        :param method: 'get',...
+        :param url:
+        :param data:
+        :return:
+        """
         return self._session.request(
             method,
             url,
@@ -72,17 +93,37 @@ class Client:
             client_secret=self._client_secret)
 
     def get_wallet(self):
+        """
+
+        :return:
+        """
         url = '{}/users/me/wallet'.format(self._host)
         return self.request('get', url).json()
 
 
 class Zonky:
+    """Testing class"""
 
     def __init__(self, host, username, password):
+        """
+
+        :param host:
+        :param username:
+        :param password:
+        """
         self._client = Client(host, username, password)
 
-    def pretty_print(self, data):
+    def pretty_print(self, data):  # pylint: disable=no-self-use
+        """
+
+        :param data:
+        :return:
+        """
         print(json.dumps(data, sort_keys=True, indent=2))
 
     def hello(self):
+        """
+
+        :return:
+        """
         self.pretty_print(self._client.get_wallet())
