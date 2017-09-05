@@ -6,7 +6,7 @@ zonkylla
 Tool for zonky.cz
 
 Preparation
-----------
+-----------
 
 -   [Fedora 26](doc/prepare_f26.md)
 
@@ -32,4 +32,4 @@ Usage
 Resources
 ---------
 
-- http://pre-commit.com/
+-   <http://pre-commit.com/>

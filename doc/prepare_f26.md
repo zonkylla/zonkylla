@@ -3,7 +3,7 @@ Fedora 26
 
 ### Development Prerequisities
 
-```bash
+``` bash
 $ sudo dnf install -y \
     gcc \
     libyaml \
@@ -14,7 +14,8 @@ $ sudo dnf install -y \
 ```
 
 ### Cloning
-```bash
+
+``` bash
 $ git clone https://github.com/celestian/zonkylla.git
 $ cd zonkylla
 ```
