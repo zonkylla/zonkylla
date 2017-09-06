@@ -35,4 +35,5 @@ Resources
 -   <http://docs.zonky.apiary.io>
 -   <http://pre-commit.com>
 -   <http://docs.python-requests.org/en/master/>
+-   <https://requests-mock.readthedocs.io/en/latest/>
 -   <http://requests-oauthlib.readthedocs.io/en/latest/index.html>
