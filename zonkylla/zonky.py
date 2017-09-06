@@ -7,6 +7,7 @@
 
 
 import json
+from abc import ABCMeta, abstractmethod
 import pkg_resources
 
 from oauthlib.oauth2 import LegacyApplicationClient
@@ -14,12 +15,20 @@ from requests_oauthlib import OAuth2Session
 from requests.auth import HTTPBasicAuth
 
 
-USER_AGENT = 'zonkylla/{} ({})'.format(
-    pkg_resources.require('zonkylla')[0].version,
-    'https://github.com/celestian/zonkylla')
+class ABCClient(metaclass=ABCMeta):
+    """Abstract class for Zonky clients"""
+
+    @abstractmethod
+    def _request(self, method, url, data):
+        raise NotImplementedError
+
+    @property
+    def _user_agent(self):
+        return 'zonkylla/{} ({})'.format(pkg_resources.require('zonkylla')
+                                         [0].version, 'https://github.com/celestian/zonkylla')
 
 
-class Client:  # pylint: disable=too-many-instance-attributes
+class Client(ABCClient):  # pylint: disable=too-many-instance-attributes
     """OAuth Client for Zonky"""
 
     def __init__(self, host, username, password):
@@ -36,12 +45,12 @@ class Client:  # pylint: disable=too-many-instance-attributes
         self._headers = {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
-            'User-Agent': USER_AGENT,
+            'User-Agent': self._user_agent,
         }
         self._token_headers = {
             'Accept': 'application/json',
             'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
-            'User-Agent': USER_AGENT,
+            'User-Agent': self._user_agent,
         }
 
         auth = HTTPBasicAuth(self._client_id, self._client_secret)
@@ -53,7 +62,7 @@ class Client:  # pylint: disable=too-many-instance-attributes
         session = OAuth2Session(
             client=client,
             auto_refresh_url=self._token_url,
-            token_updater=self.token_saver,
+            token_updater=self._token_saver,
             scope=self._scope,
         )
 
@@ -68,7 +77,7 @@ class Client:  # pylint: disable=too-many-instance-attributes
 
         self._session = session
 
-    def token_saver(self, token):
+    def _token_saver(self, token):
         """
 
         :param token:
@@ -76,7 +85,7 @@ class Client:  # pylint: disable=too-many-instance-attributes
         """
         self._session.token = token
 
-    def request(self, method, url, data=None):
+    def _request(self, method, url, data=None):
         """Method for sending of request to Zonky
 
         :param method: 'get',...
@@ -98,7 +107,7 @@ class Client:  # pylint: disable=too-many-instance-attributes
         :return:
         """
         url = '{}/users/me/wallet'.format(self._host)
-        return self.request('get', url).json()
+        return self._request('get', url).json()
 
 
 class Zonky:
