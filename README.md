@@ -32,4 +32,5 @@ Usage
 Resources
 ---------
 
--   <http://pre-commit.com/>
+-   <http://pre-commit.com>
+-   <http://requests-oauthlib.readthedocs.io/en/latest/index.html>
