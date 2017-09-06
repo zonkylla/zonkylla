@@ -1,5 +1,5 @@
 -   repo: git://github.com/pre-commit/pre-commit-hooks
-    sha: v0.9.1
+    sha: v0.9.2
     hooks:
     -   id: trailing-whitespace
         name: Trim Trailing Whitespace
@@ -8,3 +8,12 @@
         language: python
         types: [text]
     -   id: autopep8-wrapper
+-   repo: git://github.com/celestian/pytest-mirror
+    sha: '5356decf87d3d9b0e26ac6c9387b7f8d35198e99'  # Use the sha / tag you want to point at
+    hooks:
+    -   id: pytest
+        name: PyTest Runner
+        description: This hook uses py.test to run Python unit tests
+        entry: pre_commit_hooks/pytest.sh
+        language: script
+        files: \.py$
