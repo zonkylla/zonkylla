@@ -32,5 +32,6 @@ Usage
 Resources
 ---------
 
+-   <http://docs.zonky.apiary.io>
 -   <http://pre-commit.com>
 -   <http://requests-oauthlib.readthedocs.io/en/latest/index.html>
