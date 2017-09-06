@@ -34,4 +34,5 @@ Resources
 
 -   <http://docs.zonky.apiary.io>
 -   <http://pre-commit.com>
+-   <http://docs.python-requests.org/en/master/>
 -   <http://requests-oauthlib.readthedocs.io/en/latest/index.html>
