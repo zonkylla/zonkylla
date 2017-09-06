@@ -201,3 +201,4 @@ class Zonky:
         """
         self.pretty_print(self._oauth_client.get_wallet())
         self.pretty_print(self._client.get_loans())
+        print("And that's all folks!")

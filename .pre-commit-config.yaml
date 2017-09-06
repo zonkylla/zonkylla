@@ -9,11 +9,9 @@
         types: [text]
     -   id: autopep8-wrapper
 -   repo: git://github.com/celestian/pytest-mirror
-    sha: '5356decf87d3d9b0e26ac6c9387b7f8d35198e99'  # Use the sha / tag you want to point at
+    sha: '47360e705f602e7c022b7c7ea3c989fba74e6d0f'  # Use the sha / tag you want to point at
     hooks:
-    -   id: pytest
-        name: PyTest Runner
-        description: This hook uses py.test to run Python unit tests
-        entry: pre_commit_hooks/pytest.sh
-        language: script
-        files: \.py$
+    -   id: tox
+        types: []
+        args:
+        -   '-c ./tox.ini'
