@@ -8,10 +8,21 @@
         language: python
         types: [text]
     -   id: autopep8-wrapper
--   repo: git://github.com/celestian/pytest-mirror
-    sha: '47360e705f602e7c022b7c7ea3c989fba74e6d0f'  # Use the sha / tag you want to point at
+-   repo: local
     hooks:
-    -   id: tox
+    -   id: tox-py36
+        name: tox py36
+        entry: ./.pre-commit-scripts/check-tox.sh
+        language: script
         types: []
         args:
         -   '-c ./tox.ini'
+        -   '-e py36'
+    -   id: tox-pylint
+        name: tox pylint
+        entry: ./.pre-commit-scripts/check-tox.sh
+        language: script
+        types: []
+        args:
+        -   '-c ./tox.ini'
+        -   '-e pylint'
