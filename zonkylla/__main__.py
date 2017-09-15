@@ -7,12 +7,14 @@
 Usage:
   zonkylla.py [-t] [-d] <user>
   zonkylla.py (-h | --help)
+  zonkylla.py --api-version
   zonkylla.py --version
 Options:
- -t            Connect to mock server.
- -d            Debugging output.
- -h --help     Show this screen.
- --version     Show version.
+  -t             Connect to mock server.
+  -d             Debugging output.
+  -h --help      Show this screen.
+  --api-version  Show version of supported zonky.cz API version.
+  --version      Show version.
 """
 
 
@@ -34,6 +36,19 @@ def main():
         __doc__,
         version=pkg_resources.require('zonkylla')[0].version)
 
+    if args['-t']:
+        host = 'https://private-anon-212b7e4eaf-zonky.apiary-mock.com'
+    else:
+        host = 'https://api.zonky.cz'
+
+    if args['-d']:
+        logging.basicConfig(level=logging.DEBUG)
+
+    if args['--api-version']:
+        zonky = Zonky(host)
+        print(zonky.zonky_api_version)
+        return
+
     username = args['<user>']
     password = None
     try:
@@ -46,16 +61,7 @@ def main():
 
     print(username, 'password is provided' if password else 'password is not provided')
 
-    url = None
-    if args['-t']:
-        url = 'https://private-anon-212b7e4eaf-zonky.apiary-mock.com'
-    else:
-        url = 'https://api.zonky.cz'
-
-    if args['-d']:
-        logging.basicConfig(level=logging.DEBUG)
-
-    zonky = Zonky(url, username, password)
+    zonky = Zonky(host, username, password)
     zonky.hello()
 
 

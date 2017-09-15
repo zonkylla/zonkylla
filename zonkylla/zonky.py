@@ -28,6 +28,11 @@ class AbstractClient(metaclass=ABCMeta):
         }
 
     @property
+    def zonky_api_version(self):
+        """Version of zonky API"""
+        return '0.58.0'
+
+    @property
     def _user_agent(self):
         return 'zonkylla/{} ({})'.format(pkg_resources.require('zonkylla')
                                          [0].version, 'https://github.com/celestian/zonkylla')
@@ -176,15 +181,25 @@ class Client(AbstractClient):
 class Zonky:
     """Testing class"""
 
-    def __init__(self, host, username, password):
+    def __init__(self, host, username=None, password=None):
         """
 
         :param host:
         :param username:
         :param password:
         """
-        self._oauth_client = OAuthClient(host, username, password)
+
         self._client = Client(host)
+
+        if username and password:
+            self._oauth_client = OAuthClient(host, username, password)
+        else:
+            self._oauth_client = None
+
+    @property
+    def zonky_api_version(self):
+        """Version of zonky API"""
+        return self._client.zonky_api_version
 
     def pretty_print(self, data):  # pylint: disable=no-self-use
         """
