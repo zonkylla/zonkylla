@@ -6,7 +6,6 @@
 '''Zonky clients module'''
 
 
-import json
 from abc import ABCMeta, abstractmethod
 import pkg_resources
 
@@ -38,24 +37,31 @@ class AbstractClient(metaclass=ABCMeta):
                                          [0].version, 'https://github.com/celestian/zonkylla')
 
     @abstractmethod
-    def get(self, url, data):
+    def _request(self, method, url, data=None):
+        """Method for sending of request to Zonky
+
+        :param method:  GET, POST, PATCH, DELETE
+        :param url:     complete url
+        :param data:    data
+        :return:        json with result
+        """
+        raise NotImplementedError
+
+    def get(self, url, data=None):
         """GET Method"""
-        raise NotImplementedError
+        return self._request('GET', url, data)
 
-    @abstractmethod
-    def post(self, url, data):
+    def post(self, url, data=None):
         """POST Method"""
-        raise NotImplementedError
+        return self._request('POST', url, data)
 
-    @abstractmethod
-    def patch(self, url, data):
+    def patch(self, url, data=None):
         """PATCH Method"""
-        raise NotImplementedError
+        return self._request('PATCH', url, data)
 
-    @abstractmethod
-    def delete(self, url, data):
+    def delete(self, url, data=None):
         """DELETE Method"""
-        raise NotImplementedError
+        return self._request('DELETE', url, data)
 
 
 class OAuthClient(
@@ -105,48 +111,23 @@ class OAuthClient(
         self._session = session
 
     def _token_saver(self, token):
-        """
+        """Save token
+
+        If you would like to save token to secret place for next use
+        you need to do here. Question is -- What is really secret place?
 
         :param token:
-        :return:
         """
         self._session.token = token
 
     def _request(self, method, url, data=None):
-        """Method for sending of request to Zonky
-
-        :param method: get, post, patch, delete
-        :param url:
-        :param data:
-        :return:
-        """
         return self._session.request(
-            method,
-            url,
+            method.lower(),
+            '{}{}'.format(self._host, url),
             data=data,
             headers=self._headers,
             client_id=self._client_id,
-            client_secret=self._client_secret)
-
-    def get(self, url, data=None):
-        return self._request('get', url, data).json()
-
-    def post(self, url, data=None):
-        raise NotImplementedError
-
-    def patch(self, url, data=None):
-        raise NotImplementedError
-
-    def delete(self, url, data=None):
-        raise NotImplementedError
-
-    def get_wallet(self):
-        """
-
-        :return:
-        """
-        url = '{}/users/me/wallet'.format(self._host)
-        return self.get(url)
+            client_secret=self._client_secret).json()
 
 
 class Client(AbstractClient):
@@ -155,34 +136,26 @@ class Client(AbstractClient):
     def __init__(self, host):
         """
 
-        :param host:
+        :param host:  URL of Zonky
         """
 
         AbstractClient.__init__(self, host)
 
-    def get(self, url, data=None):
-        return requests.get(url, data).json()
-
-    def post(self, url, data=None):
-        raise NotImplementedError
-
-    def patch(self, url, data=None):
-        raise NotImplementedError
-
-    def delete(self, url, data=None):
-        raise NotImplementedError
-
-    def get_loans(self):
-        """Get loans from Zonky"""
-        url = '{}/loans/marketplace'.format(self._host)
-        return self.get(url)
+    def _request(self, method, url, data=None):
+        return requests.request(
+            method,
+            '{}{}'.format(
+                self._host,
+                url),
+            data=data,
+            headers=None).json()
 
 
 class Zonky:
     """Testing class"""
 
     def __init__(self, host, username=None, password=None):
-        """
+        """Interface to zonky API
 
         :param host:
         :param username:
@@ -201,18 +174,18 @@ class Zonky:
         """Version of zonky API"""
         return self._client.zonky_api_version
 
-    def pretty_print(self, data):  # pylint: disable=no-self-use
-        """
+    def get_wallet(self):
+        """Wallet"""
+        return self._oauth_client.get('/users/me/wallet')
 
-        :param data:
-        :return:
-        """
-        print(json.dumps(data, sort_keys=True, indent=2))
+    def get_transactions(self):
+        """List of transactions"""
+        return self._oauth_client.get('/users/me/wallet/transactions')
 
-    def hello(self):
-        """
+    def get_loans(self):
+        """List of loans on zonky"""
+        return self._client.get('/loans/marketplace')
 
-        :return:
-        """
-        self.pretty_print(self._oauth_client.get_wallet())
-        self.pretty_print(self._client.get_loans())
+    def get_loan(self, loan_id):
+        """Detail of loan"""
+        return self._client.get('/loans/{}'.format(loan_id))

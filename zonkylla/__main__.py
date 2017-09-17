@@ -22,6 +22,7 @@ import os
 import getpass
 import sys
 import logging
+import json
 from docopt import docopt
 import pkg_resources
 
@@ -62,7 +63,18 @@ def main():
     print(username, 'password is provided' if password else 'password is not provided')
 
     zonky = Zonky(host, username, password)
-    zonky.hello()
+
+    print('Loans: ')
+    loans = zonky.get_loans()
+    print(json.dumps(loans, sort_keys=True, indent=2))
+
+    print('Wallet: ')
+    wallet = zonky.get_wallet()
+    print(json.dumps(wallet, sort_keys=True, indent=2))
+
+    print('Detail: ')
+    detail = zonky.get_loan(124817)
+    print(json.dumps(detail, sort_keys=True, indent=2))
 
 
 if __name__ == '__main__':
