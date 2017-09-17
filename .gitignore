@@ -102,3 +102,6 @@ ENV/
 
 # secret data like password
 .secrets
+
+# backup files
+*~
