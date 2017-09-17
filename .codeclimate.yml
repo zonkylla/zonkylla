@@ -12,11 +12,6 @@ engines:
     enabled: true
   radon:
     enabled: true
-checks:
-  FIXME:
-    enabled: true
-  XXX:
-    enabled: true
 ratings:
   paths:
   - "**.inc"
