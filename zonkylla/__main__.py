@@ -29,6 +29,18 @@ import pkg_resources
 from .zonky import Zonky
 
 
+def get_host(args):
+    """Return host url
+       due to argument it could be real or test
+    """
+
+    if args['-t']:
+        host = 'https://private-anon-212b7e4eaf-zonky.apiary-mock.com'
+    else:
+        host = 'https://api.zonky.cz'
+    return host
+
+
 def main():
     """
     Entry point
@@ -37,10 +49,7 @@ def main():
         __doc__,
         version=pkg_resources.require('zonkylla')[0].version)
 
-    if args['-t']:
-        host = 'https://private-anon-212b7e4eaf-zonky.apiary-mock.com'
-    else:
-        host = 'https://api.zonky.cz'
+    host = get_host(args)
 
     if args['-d']:
         logging.basicConfig(level=logging.DEBUG)
