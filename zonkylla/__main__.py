@@ -5,7 +5,7 @@
 
 """zonkylla
 Usage:
-  zonkylla.py [-t] [-d] <user>
+  zonkylla.py [-t] [-d] update <user>
   zonkylla.py (-h | --help)
   zonkylla.py --api-version
   zonkylla.py --version
@@ -22,11 +22,11 @@ import os
 import getpass
 import sys
 import logging
-import json
 from docopt import docopt
 import pkg_resources
 
-from .zonky import Zonky
+from .core.zonky import Zonky
+from .update import update_by_zonky
 
 
 def get_host(args):
@@ -41,6 +41,23 @@ def get_host(args):
     return host
 
 
+def get_password():
+    """Obtain password
+       a) from environment variable named 'ZONKYLLA_PASSWORD'
+       b) by prompt the user
+    """
+
+    try:
+        password = os.environ['ZONKYLLA_PASSWORD']
+    except KeyError:
+        if sys.stdin.isatty():
+            password = getpass.getpass('Password: ')
+        else:
+            password = sys.stdin.readline().rstrip()
+
+    return password
+
+
 def main():
     """
     Entry point
@@ -51,39 +68,20 @@ def main():
 
     host = get_host(args)
 
-    if args['-d']:
-        logging.basicConfig(level=logging.DEBUG)
-
     if args['--api-version']:
         zonky = Zonky(host)
         print(zonky.zonky_api_version)
         return
 
+    if args['-d']:
+        logging.basicConfig(level=logging.DEBUG)
+
     username = args['<user>']
-    password = None
-    try:
-        password = os.environ['ZONKYLLA_PASSWORD']
-    except KeyError:
-        if sys.stdin.isatty():
-            password = getpass.getpass('Password: ')
-        else:
-            password = sys.stdin.readline().rstrip()
+    password = get_password()
 
-    print(username, 'password is provided' if password else 'password is not provided')
-
-    zonky = Zonky(host, username, password)
-
-    print('Loans: ')
-    loans = zonky.get_loans()
-    print(json.dumps(loans, sort_keys=True, indent=2))
-
-    print('Wallet: ')
-    wallet = zonky.get_wallet()
-    print(json.dumps(wallet, sort_keys=True, indent=2))
-
-    print('Detail: ')
-    detail = zonky.get_loan(124817)
-    print(json.dumps(detail, sort_keys=True, indent=2))
+    if args['update']:
+        update_by_zonky(host, username, password)
+        return
 
 
 if __name__ == '__main__':

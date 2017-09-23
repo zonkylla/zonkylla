@@ -10,7 +10,7 @@ import json
 import requests
 import requests_mock
 
-from zonkylla.zonky import OAuthClient
+from zonkylla.core.zonky import OAuthClient
 
 
 def mock_headers():
