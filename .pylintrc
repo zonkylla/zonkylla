@@ -62,7 +62,6 @@ confidence=
 # --disable=W"
 disable=
     too-few-public-methods,
-    duplicate-code,
 
 
 [REPORTS]
@@ -252,7 +251,7 @@ ignore-comments=yes
 ignore-docstrings=yes
 
 # Ignore imports when computing similarities.
-ignore-imports=yes
+ignore-imports=no
 
 
 [LOGGING]
