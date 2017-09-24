@@ -103,5 +103,8 @@ ENV/
 # secret data like password
 .secrets
 
+# zonkylla database
+zonkylla.db
+
 # backup files
 *~

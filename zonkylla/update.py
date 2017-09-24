@@ -5,15 +5,14 @@
 
 '''Data update by zonky'''
 
-import json
-
 from .core.zonky import Zonky
+from .core.database import Database
 
 
 def update_by_zonky(host, username, password):
     """Update all data (wallet, loans) for user by zonky"""
 
     zonky = Zonky(host, username, password)
-
-    wallet = zonky.get_wallet()
-    print(json.dumps(wallet, sort_keys=True, indent=2))
+    transactions = zonky.get_transactions()
+    database = Database()
+    database.insert_transactions(transactions)
