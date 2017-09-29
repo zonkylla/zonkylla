@@ -36,6 +36,7 @@ setup(
         'requests',
         'requests-oauthlib',
         'pyyaml',
+        'python-dateutil',
     ],
     setup_requires=['pytest-runner'],
     tests_require=['pytest']

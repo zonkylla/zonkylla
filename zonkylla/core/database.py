@@ -5,7 +5,11 @@
 
 '''Database module'''
 
+from datetime import datetime
 import sqlite3
+
+from zonkylla.core.utils import adapt_datetime, convert_datetime, \
+    iso2datetime, datetime2tz
 
 
 class Database:
@@ -15,7 +19,12 @@ class Database:
         '''Init the connection'''
 
         self.database = './zonkylla.db'
-        self.connection = sqlite3.connect(self.database)
+
+        sqlite3.register_adapter(datetime, adapt_datetime)
+        sqlite3.register_converter("DATATIME", convert_datetime)
+
+        self.connection = sqlite3.connect(
+            self.database, detect_types=sqlite3.PARSE_DECLTYPES)
         self._create()
 
     def _create(self):
@@ -34,7 +43,8 @@ class Database:
                         loanName TEXT,
                         nickName TEXT,
                         orientation TEXT,
-                        transactionDate INT,
+                        transactionDate DATATIME,
+                        timeZone INT,
                         PRIMARY KEY(id ASC)
                     )
                 ''')
@@ -46,6 +56,10 @@ class Database:
 
         data = []
         for item in transactions:
+
+            dt_struct = iso2datetime(item['transactionDate'])
+            dt_tz = datetime2tz(dt_struct)
+
             data.append((
                 item['id'],
                 item['amount'],
@@ -55,7 +69,9 @@ class Database:
                 item['loanName'],
                 item['nickName'],
                 item['orientation'],
-                item['transactionDate']))
+                dt_struct,
+                dt_tz))
+
         print(data)
 
         try:
@@ -71,8 +87,9 @@ class Database:
                         loanName,
                         nickName,
                         orientation,
-                        transactionDate
-                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+                        transactionDate,
+                        timeZone
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 ''', data)
         except sqlite3.Error as err:
             print("sqlite3.Error occured: {}".format(err.args))
