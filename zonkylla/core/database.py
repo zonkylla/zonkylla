@@ -5,11 +5,9 @@
 
 '''Database module'''
 
-from datetime import datetime
 import sqlite3
 
-from zonkylla.core.utils import adapt_datetime, convert_datetime, \
-    iso2datetime, datetime2tz
+from zonkylla.core.utils import iso2datetime
 
 
 class Database:
@@ -19,12 +17,7 @@ class Database:
         '''Init the connection'''
 
         self.database = './zonkylla.db'
-
-        sqlite3.register_adapter(datetime, adapt_datetime)
-        sqlite3.register_converter("DATATIME", convert_datetime)
-
-        self.connection = sqlite3.connect(
-            self.database, detect_types=sqlite3.PARSE_DECLTYPES)
+        self.connection = sqlite3.connect(self.database)
         self._create()
 
     def _create(self):
@@ -43,8 +36,7 @@ class Database:
                         loanName TEXT,
                         nickName TEXT,
                         orientation TEXT,
-                        transactionDate DATATIME,
-                        timeZone INT,
+                        transactionDate DATETIME,
                         PRIMARY KEY(id ASC)
                     )
                 ''')
@@ -57,8 +49,7 @@ class Database:
         data = []
         for item in transactions:
 
-            dt_struct = iso2datetime(item['transactionDate'])
-            dt_tz = datetime2tz(dt_struct)
+            #dt_struct = iso2datetime()
 
             data.append((
                 item['id'],
@@ -69,8 +60,7 @@ class Database:
                 item['loanName'],
                 item['nickName'],
                 item['orientation'],
-                dt_struct,
-                dt_tz))
+                item['transactionDate']))
 
         print(data)
 
@@ -87,9 +77,20 @@ class Database:
                         loanName,
                         nickName,
                         orientation,
-                        transactionDate,
-                        timeZone
-                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                        transactionDate
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
                 ''', data)
         except sqlite3.Error as err:
             print("sqlite3.Error occured: {}".format(err.args))
+
+    def get_last_transaction_date(self):
+        '''Get the datetime of last update'''
+        try:
+            with self.connection as con:
+                con = con.cursor()
+                con.execute('SELECT MAX(transactionDate) FROM Transactions')
+                dt_value = con.fetchone()[0]
+        except sqlite3.Error as err:
+            print("sqlite3.Error occured: {}".format(err.args))
+
+        return iso2datetime(dt_value) if dt_value else None
