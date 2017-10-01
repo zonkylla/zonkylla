@@ -14,6 +14,8 @@ from requests_oauthlib import OAuth2Session
 from requests.auth import HTTPBasicAuth
 import requests
 
+from .utils import datetime2iso
+
 
 class AbstractClient(metaclass=ABCMeta):
     """Abstract class for Zonky clients"""
@@ -124,7 +126,7 @@ class OAuthClient(
         return self._session.request(
             method.lower(),
             '{}{}'.format(self._host, url),
-            data=data,
+            params=data,
             headers=self._headers,
             client_id=self._client_id,
             client_secret=self._client_secret).json()
@@ -144,10 +146,8 @@ class Client(AbstractClient):
     def _request(self, method, url, data=None):
         return requests.request(
             method,
-            '{}{}'.format(
-                self._host,
-                url),
-            data=data,
+            '{}{}'.format(self._host, url),
+            params=data,
             headers=None).json()
 
 
@@ -178,9 +178,11 @@ class Zonky:
         """Wallet"""
         return self._oauth_client.get('/users/me/wallet')
 
-    def get_transactions(self):
+    def get_transactions(self, from_dt=None):
         """List of transactions"""
-        return self._oauth_client.get('/users/me/wallet/transactions')
+        params = {'transaction.transactionDate__gte': datetime2iso(
+            from_dt)} if from_dt else None
+        return self._oauth_client.get('/users/me/wallet/transactions', params)
 
     def get_loans(self):
         """List of loans on zonky"""

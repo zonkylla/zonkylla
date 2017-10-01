@@ -62,13 +62,11 @@ class Database:
                 item['orientation'],
                 item['transactionDate']))
 
-        print(data)
-
         try:
             with self.connection as con:
                 con = con.cursor()
                 con.executemany('''
-                    INSERT INTO Transactions(
+                    INSERT OR REPLACE INTO Transactions(
                         id,
                         amount,
                         category,
