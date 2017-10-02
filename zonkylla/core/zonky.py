@@ -7,6 +7,7 @@
 
 
 from abc import ABCMeta, abstractmethod
+from time import sleep
 import pkg_resources
 
 from oauthlib.oauth2 import LegacyApplicationClient
@@ -39,7 +40,7 @@ class AbstractClient(metaclass=ABCMeta):
                                          [0].version, 'https://github.com/celestian/zonkylla')
 
     @abstractmethod
-    def _request(self, method, url, data=None):
+    def _request(self, method, url, params=None):
         """Method for sending of request to Zonky
 
         :param method:  GET, POST, PATCH, DELETE
@@ -49,21 +50,21 @@ class AbstractClient(metaclass=ABCMeta):
         """
         raise NotImplementedError
 
-    def get(self, url, data=None):
+    def get(self, url, params=None):
         """GET Method"""
-        return self._request('GET', url, data)
+        return self._request('GET', url, params)
 
-    def post(self, url, data=None):
+    def post(self, url, params=None):
         """POST Method"""
-        return self._request('POST', url, data)
+        return self._request('POST', url, params)
 
-    def patch(self, url, data=None):
+    def patch(self, url, params=None):
         """PATCH Method"""
-        return self._request('PATCH', url, data)
+        return self._request('PATCH', url, params)
 
-    def delete(self, url, data=None):
+    def delete(self, url, params=None):
         """DELETE Method"""
-        return self._request('DELETE', url, data)
+        return self._request('DELETE', url, params)
 
 
 class OAuthClient(
@@ -122,14 +123,37 @@ class OAuthClient(
         """
         self._session.token = token
 
-    def _request(self, method, url, data=None):
-        return self._session.request(
-            method.lower(),
-            '{}{}'.format(self._host, url),
-            params=data,
-            headers=self._headers,
-            client_id=self._client_id,
-            client_secret=self._client_secret).json()
+    def _request(self, method, url, params=None):
+
+        result = []
+
+        headers = self._headers
+        xpage = 0
+        xsize = 10
+
+        again = True
+        while again:
+
+            headers['X-Page'] = str(xpage)
+            headers['X-Size'] = str(xsize)
+
+            req = self._session.request(
+                method.lower(),
+                '{}{}'.format(self._host, url),
+                params=params,
+                headers=headers,
+                client_id=self._client_id,
+                client_secret=self._client_secret)
+
+            result = result + req.json()
+            xtotal = int(req.headers['X-Total'])
+
+            again = True if ((xpage + 1) * xsize) < xtotal else False
+            xpage = xpage + 1
+
+            sleep(0.5)
+
+        return result
 
 
 class Client(AbstractClient):
@@ -143,11 +167,11 @@ class Client(AbstractClient):
 
         AbstractClient.__init__(self, host)
 
-    def _request(self, method, url, data=None):
+    def _request(self, method, url, params=None):
         return requests.request(
             method,
             '{}{}'.format(self._host, url),
-            params=data,
+            params=params,
             headers=None).json()
 
 
