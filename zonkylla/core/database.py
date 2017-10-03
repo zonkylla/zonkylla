@@ -154,3 +154,22 @@ class Database:
                 con.executemany(sql, rows)
         except sqlite3.Error as err:
             print("sqlite3.Error occured: {}".format(err.args))
+
+
+    def missing_loan_ids(self):
+        sql = '''
+        SELECT Transactions.loanId
+        FROM Transactions
+        LEFT JOIN Loans ON Transactions.loanId = Loans.id
+        WHERE Loans.id IS NULL
+        AND Transactions.loanId IS NOT NULL
+        GROUP BY Transactions.loanId;
+        '''
+        try:
+            with self.connection as con:
+                con.row_factory = sqlite3.Row
+                con = con.cursor()
+                results = con.execute(sql).fetchall()
+                return list(map(lambda r: r['loanId'], results))
+        except sqlite3.Error as err:
+            print("sqlite3.Error occured: {}".format(err.args))

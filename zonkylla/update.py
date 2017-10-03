@@ -19,5 +19,6 @@ def update_by_zonky(host, username, password):
     transactions = zonky.get_transactions(from_dt=last_dt)
     database.insert_transactions(transactions)
 
-    #loan_detail = zonky.get_loan(124272)
-    # database.insert_loans([loan_detail])
+    loan_ids = database.missing_loan_ids()
+    missing_loans = list(map(lambda l: zonky.get_loan(l), loan_ids))
+    database.insert_loans(missing_loans)
