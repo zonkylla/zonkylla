@@ -39,7 +39,7 @@ class AbstractClient(metaclass=ABCMeta):
         return 'zonkylla/{} ({})'.format(pkg_resources.require('zonkylla')
                                          [0].version, 'https://github.com/celestian/zonkylla')
 
-    def _request(self, method, url, params=None, headers=None):
+    def _request(self, method, url, params={}, headers={}):
         """Method for sending of request to Zonky
 
         :param method:  GET, POST, PATCH, DELETE
@@ -76,21 +76,21 @@ class AbstractClient(metaclass=ABCMeta):
 
     def _additional_params(self): # pylint: disable=no-self-use
         """Additional parameters used when making request"""
-        return []
+        return {}
 
-    def get(self, url, params=None, headers=None):
+    def get(self, url, params={}, headers={}):
         """GET Method"""
         return self._request('GET', url, params, headers)
 
-    def post(self, url, params=None, headers=None):
+    def post(self, url, params={}, headers={}):
         """POST Method"""
         return self._request('POST', url, params, headers)
 
-    def patch(self, url, params=None, headers=None):
+    def patch(self, url, params={}, headers={}):
         """PATCH Method"""
         return self._request('PATCH', url, params, headers)
 
-    def delete(self, url, params=None, headers=None):
+    def delete(self, url, params={}, headers={}):
         """DELETE Method"""
         return self._request('DELETE', url, params, headers)
 
