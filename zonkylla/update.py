@@ -18,3 +18,6 @@ def update_by_zonky(host, username, password):
     zonky = Zonky(host, username, password)
     transactions = zonky.get_transactions(from_dt=last_dt)
     database.insert_transactions(transactions)
+
+    #loan_detail = zonky.get_loan(124272)
+    # database.insert_loans([loan_detail])

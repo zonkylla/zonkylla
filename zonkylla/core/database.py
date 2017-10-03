@@ -77,9 +77,6 @@ class Database:
 
         data = []
         for item in transactions:
-
-            #dt_struct = iso2datetime()
-
             data.append((
                 item['id'],
                 item['amount'],
@@ -121,3 +118,39 @@ class Database:
             print("sqlite3.Error occured: {}".format(err.args))
 
         return iso2datetime(dt_value) if dt_value else None
+
+    def insert_loans(self, loans):
+        '''Add loans to the database'''
+
+        rows = []
+        for loan in loans:
+            row = []
+            cols = []
+
+            for key, value in loan.items():
+
+                cols.append(key)
+
+                if key == 'photos':
+                    value = str(value)
+
+                if key in ['topped', 'covered', 'published']:
+                    value = 1 if value else 0
+
+                if key in ['region', 'purpose']:
+                    value = int(value)
+
+                row.append(value)
+
+            rows.append((row))
+            columns = ', '.join(cols)
+            placeholders = ', '.join('?' * len(loan.keys()))
+
+        sql = 'INSERT OR REPLACE INTO Loans({}) VALUES ({})'.format(
+            columns, placeholders)
+        try:
+            with self.connection as con:
+                con = con.cursor()
+                con.executemany(sql, rows)
+        except sqlite3.Error as err:
+            print("sqlite3.Error occured: {}".format(err.args))
