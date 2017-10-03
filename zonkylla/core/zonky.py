@@ -129,10 +129,10 @@ class OAuthClient(
 
         headers = self._headers
         xpage = 0
-        xsize = 10
+        xsize = 30
+        xtotal = 100
 
-        again = True
-        while again:
+        while ((xpage + 1) * xsize) < xtotal:
 
             headers['X-Page'] = str(xpage)
             headers['X-Size'] = str(xsize)
@@ -147,11 +147,10 @@ class OAuthClient(
 
             result = result + req.json()
             xtotal = int(req.headers['X-Total'])
-
-            again = True if ((xpage + 1) * xsize) < xtotal else False
             xpage = xpage + 1
 
-            sleep(0.5)
+            if ((xpage + 1) * xsize) < xtotal:
+                sleep(0.5)
 
         return result
 
