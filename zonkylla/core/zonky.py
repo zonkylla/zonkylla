@@ -203,10 +203,15 @@ class Zonky:
 
     def get_transactions(self, from_dt=None):
         """List of transactions"""
-        params = {'transaction.transactionDate__gte': datetime2iso(
-            from_dt)} if from_dt else {}
-        params['X-Order'] = 'transaction.transactionDate'
-        return self._oauth_client.get('/users/me/wallet/transactions', params)
+        params = {}
+        headers = {}
+
+        if from_dt:
+            params['transaction.transactionDate__gte'] = datetime2iso(from_dt)
+
+        headers['X-Order'] = 'transaction.transactionDate'
+
+        return self._oauth_client.get('/users/me/wallet/transactions', params, headers)
 
     def get_loans(self):
         """List of loans on zonky"""
