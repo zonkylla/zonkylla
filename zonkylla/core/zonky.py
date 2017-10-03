@@ -39,7 +39,6 @@ class AbstractClient(metaclass=ABCMeta):
         return 'zonkylla/{} ({})'.format(pkg_resources.require('zonkylla')
                                          [0].version, 'https://github.com/celestian/zonkylla')
 
-    @abstractmethod
     def _request(self, method, url, params=None, headers=None):
         """Method for sending of request to Zonky
 
@@ -48,7 +47,36 @@ class AbstractClient(metaclass=ABCMeta):
         :param data:    data
         :return:        json with result
         """
+        headers.update(self._headers)
+        headers.setdefault('X-Page', str(0))
+        headers.setdefault('X-Size', str(10))
+
+        req = self._client().request(
+            method.lower(),
+            '{}{}'.format(self._host, url),
+            params=params,
+            headers=headers,
+            **self._additional_params()
+        )
+
+        result = req.json()
+
+        if ((int(headers['X-Page']) + 1) *
+                int(headers['X-Size'])) < int(req.headers['X-Total']):
+            headers['X-Page'] = str(int(headers['X-Page']) + 1)
+            result = result + self._request(method, url, params, headers)
+            sleep(0.3)
+
+        return result
+
+    @abstractmethod
+    def _client(self):
+        """Client object"""
         raise NotImplementedError
+
+    def _additional_params(self): # pylint: disable=no-self-use
+        """Additional parameters used when making request"""
+        return []
 
     def get(self, url, params=None, headers=None):
         """GET Method"""
@@ -123,29 +151,14 @@ class OAuthClient(
         """
         self._session.token = token
 
-    def _request(self, method, url, params=None, headers=None):
+    def _client(self):
+        return self._session
 
-        headers.update(self._headers)
-        headers.setdefault('X-Page', str(0))
-        headers.setdefault('X-Size', str(10))
-
-        req = self._session.request(
-            method.lower(),
-            '{}{}'.format(self._host, url),
-            params=params,
-            headers=headers,
-            client_id=self._client_id,
-            client_secret=self._client_secret)
-
-        result = req.json()
-
-        if ((int(headers['X-Page']) + 1) *
-                int(headers['X-Size'])) < int(req.headers['X-Total']):
-            headers['X-Page'] = str(int(headers['X-Page']) + 1)
-            result = result + self._request(method, url, params, headers)
-            sleep(0.3)
-
-        return result
+    def _additional_params(self):
+        return {
+            'client_id'    : self._client_id,
+            'client_secret': self._client_secret,
+        }
 
 
 class Client(AbstractClient):
@@ -159,12 +172,8 @@ class Client(AbstractClient):
 
         AbstractClient.__init__(self, host)
 
-    def _request(self, method, url, params=None, headers=None):
-        return requests.request(
-            method,
-            '{}{}'.format(self._host, url),
-            params=params,
-            headers=headers).json()
+    def _client(self):
+        return requests
 
 
 class Zonky:
