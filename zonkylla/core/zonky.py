@@ -205,7 +205,8 @@ class Zonky:
     def get_transactions(self, from_dt=None):
         """List of transactions"""
         params = {'transaction.transactionDate__gte': datetime2iso(
-            from_dt)} if from_dt else None
+            from_dt)} if from_dt else {}
+        params['X-Order'] = 'transaction.transactionDate'
         return self._oauth_client.get('/users/me/wallet/transactions', params)
 
     def get_loans(self):
