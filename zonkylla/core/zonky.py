@@ -40,7 +40,7 @@ class AbstractClient(metaclass=ABCMeta):
                                          [0].version, 'https://github.com/celestian/zonkylla')
 
     @abstractmethod
-    def _request(self, method, url, params=None):
+    def _request(self, method, url, params=None, headers=None):
         """Method for sending of request to Zonky
 
         :param method:  GET, POST, PATCH, DELETE
@@ -50,21 +50,21 @@ class AbstractClient(metaclass=ABCMeta):
         """
         raise NotImplementedError
 
-    def get(self, url, params=None):
+    def get(self, url, params=None, headers=None):
         """GET Method"""
-        return self._request('GET', url, params)
+        return self._request('GET', url, params, headers)
 
-    def post(self, url, params=None):
+    def post(self, url, params=None, headers=None):
         """POST Method"""
-        return self._request('POST', url, params)
+        return self._request('POST', url, params, headers)
 
-    def patch(self, url, params=None):
+    def patch(self, url, params=None, headers=None):
         """PATCH Method"""
-        return self._request('PATCH', url, params)
+        return self._request('PATCH', url, params, headers)
 
-    def delete(self, url, params=None):
+    def delete(self, url, params=None, headers=None):
         """DELETE Method"""
-        return self._request('DELETE', url, params)
+        return self._request('DELETE', url, params, headers)
 
 
 class OAuthClient(
@@ -123,11 +123,11 @@ class OAuthClient(
         """
         self._session.token = token
 
-    def _request(self, method, url, params=None):
+    def _request(self, method, url, params=None, headers=None):
 
         result = []
 
-        headers = self._headers
+        headers.update(self._headers)
         xpage = 0
         xsize = 30
         xtotal = 100
@@ -166,12 +166,12 @@ class Client(AbstractClient):
 
         AbstractClient.__init__(self, host)
 
-    def _request(self, method, url, params=None):
+    def _request(self, method, url, params=None, headers=None):
         return requests.request(
             method,
             '{}{}'.format(self._host, url),
             params=params,
-            headers=None).json()
+            headers=headers).json()
 
 
 class Zonky:
