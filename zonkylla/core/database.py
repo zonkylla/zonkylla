@@ -40,6 +40,35 @@ class Database:
                         PRIMARY KEY(id ASC)
                     )
                 ''')
+
+                con.execute('''
+                    CREATE TABLE IF NOT EXISTS Loans (
+                        id INT,
+                        url TEXT,
+                        name TEXT,
+                        story TEXT,
+                        purpose INT,
+                        photos TEXT,
+                        userId INT,
+                        nickName TEXT,
+                        termInMonths INT,
+                        interestRate REAL,
+                        rating TEXT,
+                        topped INT,
+                        amount REAL,
+                        remainingInvestment REAL,
+                        investmentRate REAL,
+                        covered INT,
+                        datePublished DATETIME,
+                        published INT,
+                        deadline DATETIME,
+                        investmentsCount INT,
+                        questionsCount INT,
+                        region INT,
+                        mainIncomeType TEXT,
+                        PRIMARY KEY(id ASC)
+                    )
+                ''')
         except sqlite3.Error as err:
             print("sqlite3.Error occured: {}".format(err.args))
 
