@@ -125,32 +125,25 @@ class OAuthClient(
 
     def _request(self, method, url, params=None, headers=None):
 
-        result = []
-
         headers.update(self._headers)
-        xpage = 0
-        xsize = 30
-        xtotal = 100
+        headers.setdefault('X-Page', str(0))
+        headers.setdefault('X-Size', str(10))
 
-        while ((xpage + 1) * xsize) < xtotal:
+        req = self._session.request(
+            method.lower(),
+            '{}{}'.format(self._host, url),
+            params=params,
+            headers=headers,
+            client_id=self._client_id,
+            client_secret=self._client_secret)
 
-            headers['X-Page'] = str(xpage)
-            headers['X-Size'] = str(xsize)
+        result = req.json()
 
-            req = self._session.request(
-                method.lower(),
-                '{}{}'.format(self._host, url),
-                params=params,
-                headers=headers,
-                client_id=self._client_id,
-                client_secret=self._client_secret)
-
-            result = result + req.json()
-            xtotal = int(req.headers['X-Total'])
-            xpage = xpage + 1
-
-            if ((xpage + 1) * xsize) < xtotal:
-                sleep(0.5)
+        if ((int(headers['X-Page']) + 1) *
+                int(headers['X-Size'])) < int(req.headers['X-Total']):
+            headers['X-Page'] = str(int(headers['X-Page']) + 1)
+            result = result + self._request(method, url, params, headers)
+            sleep(0.3)
 
         return result
 
@@ -211,7 +204,8 @@ class Zonky:
 
         headers['X-Order'] = 'transaction.transactionDate'
 
-        return self._oauth_client.get('/users/me/wallet/transactions', params, headers)
+        return self._oauth_client.get(
+            '/users/me/wallet/transactions', params, headers)
 
     def get_loans(self):
         """List of loans on zonky"""
