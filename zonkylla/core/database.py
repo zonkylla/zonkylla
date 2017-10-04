@@ -75,6 +75,9 @@ class Database:
     def insert_transactions(self, transactions):
         '''Add transactions to the database'''
 
+        if not transactions:
+            return
+
         data = []
         for item in transactions:
             data.append((
@@ -121,6 +124,9 @@ class Database:
 
     def insert_loans(self, loans):
         '''Add loans to the database'''
+
+        if not loans:
+            return
 
         rows = []
         for loan in loans:
