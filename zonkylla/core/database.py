@@ -159,12 +159,12 @@ class Database:
         '''Get loanId of loans which missing in Loans'''
 
         sql = '''
-        SELECT Transactions.loanId
-        FROM Transactions
-        LEFT JOIN Loans ON Transactions.loanId = Loans.id
-        WHERE Loans.id IS NULL
-        AND Transactions.loanId IS NOT NULL
-        GROUP BY Transactions.loanId;
+            SELECT Transactions.loanId
+            FROM Transactions
+            LEFT JOIN Loans ON Transactions.loanId = Loans.id
+            WHERE Loans.id IS NULL
+            AND Transactions.loanId IS NOT NULL
+            GROUP BY Transactions.loanId;
         '''
         try:
             with self.connection as con:
