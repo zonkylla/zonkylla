@@ -39,7 +39,7 @@ class AbstractClient(metaclass=ABCMeta):
         return 'zonkylla/{} ({})'.format(pkg_resources.require('zonkylla')
                                          [0].version, 'https://github.com/celestian/zonkylla')
 
-    def _request(self, method, url, params={}, headers={}):
+    def _request(self, method, url, params=None, headers=None):
         """Method for sending of request to Zonky
 
         :param method:  GET, POST, PATCH, DELETE
@@ -47,6 +47,12 @@ class AbstractClient(metaclass=ABCMeta):
         :param data:    data
         :return:        json with result
         """
+
+        if params is None:
+            params = {}
+        if headers is None:
+            headers = {}
+
         headers.update(self._headers)
         headers.setdefault('X-Page', str(0))
         headers.setdefault('X-Size', str(10))
@@ -75,24 +81,48 @@ class AbstractClient(metaclass=ABCMeta):
         """Client object"""
         raise NotImplementedError
 
-    def _additional_params(self): # pylint: disable=no-self-use
+    def _additional_params(self):  # pylint: disable=no-self-use
         """Additional parameters used when making request"""
         return {}
 
-    def get(self, url, params={}, headers={}):
+    def get(self, url, params=None, headers=None):
         """GET Method"""
+
+        if params is None:
+            params = {}
+        if headers is None:
+            headers = {}
+
         return self._request('GET', url, params, headers)
 
-    def post(self, url, params={}, headers={}):
+    def post(self, url, params=None, headers=None):
         """POST Method"""
+
+        if params is None:
+            params = {}
+        if headers is None:
+            headers = {}
+
         return self._request('POST', url, params, headers)
 
-    def patch(self, url, params={}, headers={}):
+    def patch(self, url, params=None, headers=None):
         """PATCH Method"""
+
+        if params is None:
+            params = {}
+        if headers is None:
+            headers = {}
+
         return self._request('PATCH', url, params, headers)
 
-    def delete(self, url, params={}, headers={}):
+    def delete(self, url, params=None, headers=None):
         """DELETE Method"""
+
+        if params is None:
+            params = {}
+        if headers is None:
+            headers = {}
+
         return self._request('DELETE', url, params, headers)
 
 
@@ -157,7 +187,7 @@ class OAuthClient(
 
     def _additional_params(self):
         return {
-            'client_id'    : self._client_id,
+            'client_id': self._client_id,
             'client_secret': self._client_secret,
         }
 

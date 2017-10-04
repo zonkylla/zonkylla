@@ -155,8 +155,9 @@ class Database:
         except sqlite3.Error as err:
             print("sqlite3.Error occured: {}".format(err.args))
 
-
     def missing_loan_ids(self):
+        '''Get loanId of loans which missing in Loans'''
+
         sql = '''
         SELECT Transactions.loanId
         FROM Transactions
