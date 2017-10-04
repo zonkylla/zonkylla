@@ -57,7 +57,7 @@ class AbstractClient(metaclass=ABCMeta):
         headers.setdefault('X-Page', str(0))
         headers.setdefault('X-Size', str(10))
 
-        req = self._client().request(
+        response = self._client().request(
             method.lower(),
             '{}{}'.format(self._host, url),
             params=params,
@@ -65,11 +65,11 @@ class AbstractClient(metaclass=ABCMeta):
             **self._additional_params()
         )
 
-        result = req.json()
+        result = response.json()
 
-        if 'X-Total' in req.headers:
+        if 'X-Total' in response.headers:
             if ((int(headers['X-Page']) + 1) *
-                    int(headers['X-Size'])) < int(req.headers['X-Total']):
+                    int(headers['X-Size'])) < int(response.headers['X-Total']):
                 headers['X-Page'] = str(int(headers['X-Page']) + 1)
                 result = result + self._request(method, url, params, headers)
                 sleep(0.3)
