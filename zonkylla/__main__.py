@@ -26,7 +26,7 @@ from docopt import docopt
 import pkg_resources
 
 from .core.zonky import Zonky
-from .update import update_by_zonky
+from .update import update_from_zonky
 
 
 def get_host(args):
@@ -80,7 +80,7 @@ def main():
     password = get_password()
 
     if args['update']:
-        update_by_zonky(host, username, password)
+        update_from_zonky(host, username, password)
         return
 
 

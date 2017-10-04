@@ -9,7 +9,7 @@ from .core.zonky import Zonky
 from .core.database import Database
 
 
-def update_by_zonky(host, username, password):
+def update_from_zonky(host, username, password):
     """Update all data (wallet, loans) for user by zonky"""
 
     database = Database()
