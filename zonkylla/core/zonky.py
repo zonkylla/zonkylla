@@ -7,6 +7,7 @@
 
 
 from abc import ABCMeta, abstractmethod
+from datetime import datetime, timedelta
 from time import sleep
 import pkg_resources
 
@@ -28,6 +29,7 @@ class AbstractClient(metaclass=ABCMeta):
             'Content-Type': 'application/json',
             'User-Agent': self._user_agent,
         }
+        self._time_lock = datetime.now()
 
     @property
     def zonky_api_version(self):
@@ -38,6 +40,15 @@ class AbstractClient(metaclass=ABCMeta):
     def _user_agent(self):
         return 'zonkylla/{} ({})'.format(pkg_resources.require('zonkylla')
                                          [0].version, 'https://github.com/celestian/zonkylla')
+
+    def _wait(self):
+        '''Wait until time lock is released'''
+        while datetime.now() < self._time_lock:
+            sleep(0.1)
+
+    def _update_time_lock(self):
+        '''Set new time lock'''
+        self._time_lock = datetime.now() + timedelta(milliseconds=500)
 
     def _request(self, method, url, params=None, headers=None):
         """Method for sending of request to Zonky
@@ -57,6 +68,7 @@ class AbstractClient(metaclass=ABCMeta):
         headers.setdefault('X-Page', str(0))
         headers.setdefault('X-Size', str(10))
 
+        self._wait()
         response = self._client().request(
             method.lower(),
             '{}{}'.format(self._host, url),
@@ -64,6 +76,7 @@ class AbstractClient(metaclass=ABCMeta):
             headers=headers,
             **self._additional_params()
         )
+        self._update_time_lock()
 
         result = response.json()
 
@@ -72,7 +85,6 @@ class AbstractClient(metaclass=ABCMeta):
                     int(headers['X-Size'])) < int(response.headers['X-Total']):
                 headers['X-Page'] = str(int(headers['X-Page']) + 1)
                 result = result + self._request(method, url, params, headers)
-                sleep(0.3)
 
         return result
 
