@@ -81,9 +81,10 @@ class AbstractClient(metaclass=ABCMeta):
         result = response.json()
 
         if 'X-Total' in response.headers:
-            if ((int(headers['X-Page']) + 1) *
-                    int(headers['X-Size'])) < int(response.headers['X-Total']):
-                headers['X-Page'] = str(int(headers['X-Page']) + 1)
+            xpage = int(headers['X-Page'])
+            xsize = int(headers['X-Size'])
+            if ((xpage + 1) * xsize) < int(response.headers['X-Total']):
+                headers['X-Page'] = str(xpage + 1)
                 result = result + self._request(method, url, params, headers)
 
         return result
