@@ -6,6 +6,7 @@
 '''Database module'''
 
 import sqlite3
+import yaml
 
 from zonkylla.core.utils import iso2datetime
 
@@ -20,57 +21,38 @@ class Database:
         self.connection = sqlite3.connect(self.database)
         self._create()
 
+    def _create_sql_cmd(self, name, columns, primary_key):  # pylint: disable=no-self-use
+        '''Return create SQL command'''
+
+        cmd = 'CREATE TABLE IF NOT EXISTS {} (\n'.format(name)
+        items = []
+        for column_name, column_type in columns.items():
+            items += ['{} {}'.format(column_name, column_type.upper())]
+        cmd += '\t' + ',\n\t'.join(items) + ',\n\t'
+        cmd += 'PRIMARY KEY({} {})'.format(
+            primary_key['name'], primary_key['order'].upper())
+        cmd += '\n)'
+        return cmd
+
     def _create(self):
         '''Prepare the structure if doesn't exist'''
 
-        try:
-            with self.connection as con:
-                con = con.cursor()
-                con.execute('''
-                    CREATE TABLE IF NOT EXISTS Transactions (
-                        id INT,
-                        amount REAL,
-                        category TEXT,
-                        customMessage TEXT,
-                        loanId INT,
-                        loanName TEXT,
-                        nickName TEXT,
-                        orientation TEXT,
-                        transactionDate DATETIME,
-                        PRIMARY KEY(id ASC)
-                    )
-                ''')
+        with open('./data/tables.yaml', 'r') as stream:
+            tables = yaml.load(stream)
 
-                con.execute('''
-                    CREATE TABLE IF NOT EXISTS Loans (
-                        id INT,
-                        url TEXT,
-                        name TEXT,
-                        story TEXT,
-                        purpose INT,
-                        photos TEXT,
-                        userId INT,
-                        nickName TEXT,
-                        termInMonths INT,
-                        interestRate REAL,
-                        rating TEXT,
-                        topped INT,
-                        amount REAL,
-                        remainingInvestment REAL,
-                        investmentRate REAL,
-                        covered INT,
-                        datePublished DATETIME,
-                        published INT,
-                        deadline DATETIME,
-                        investmentsCount INT,
-                        questionsCount INT,
-                        region INT,
-                        mainIncomeType TEXT,
-                        PRIMARY KEY(id ASC)
-                    )
-                ''')
-        except sqlite3.Error as err:
-            print("sqlite3.Error occured: {}".format(err.args))
+        sql_commands = []
+        for table in tables:
+            sql_command = self._create_sql_cmd(
+                table, tables[table]['columns'], tables[table]['primary_key'])
+            sql_commands.append(sql_command)
+
+        for sql_command in sql_commands:
+            try:
+                with self.connection as con:
+                    con = con.cursor()
+                    con.execute(sql_command)
+            except sqlite3.Error as err:
+                print("sqlite3.Error occured: {}".format(err.args))
 
     def insert_transactions(self, transactions):
         '''Add transactions to the database'''

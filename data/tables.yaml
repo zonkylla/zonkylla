@@ -1,0 +1,44 @@
+Transactions:
+  columns:
+    id: int
+    amount: real
+    category: text
+    customMessage: text
+    loanId: int
+    loanName: text
+    nickName: text
+    orientation: text
+    transactionDate: datetime
+  primary_key:
+    name: id
+    order: asc
+
+Loans:
+  columns:
+    id: int
+    url: text
+    name: text
+    story: text
+    purpose: int
+    photos: text
+    userId: int
+    nickName: text
+    termInMonths: int
+    interestRate: real
+    rating: text
+    topped: int
+    amount: real
+    remainingInvestment: real
+    investmentRate: real
+    covered: int
+    datePublished: datetime
+    published: int
+    deadline: datetime
+    investmentsCount: int
+    questionsCount: int
+    region: int
+    mainIncomeType: text
+  primary_key:
+    name: id
+    order: asc
+
