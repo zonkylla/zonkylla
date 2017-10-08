@@ -117,6 +117,9 @@ class Database:
 
             for key, value in loan.items():
 
+                if key in ['myOtherInvestments']:
+                    continue
+
                 cols.append(key)
 
                 if key == 'photos':
@@ -132,7 +135,7 @@ class Database:
 
             rows.append((row))
             columns = ', '.join(cols)
-            placeholders = ', '.join('?' * len(loan.keys()))
+            placeholders = ', '.join('?' * len(cols))
 
         sql = 'INSERT OR REPLACE INTO Loans({}) VALUES ({})'.format(
             columns, placeholders)
