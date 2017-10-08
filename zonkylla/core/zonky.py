@@ -278,4 +278,5 @@ class Zonky:
 
         headers['X-Order'] = 'timeCreated'
 
-        return self._oauth_client.get('/loans/{}/investments'.format(loan_id), params, headers)
+        return self._oauth_client.get(
+            '/loans/{}/investments'.format(loan_id), params, headers)
