@@ -19,32 +19,32 @@ class Database:
 
         self.database = './zonkylla.db'
         self.connection = sqlite3.connect(self.database)
+
+        with open('./data/tables.yaml', 'r') as stream:
+            self.schema = yaml.load(stream)
+
         self._create()
 
-    def _create_sql_cmd(self, name, columns, primary_key):  # pylint: disable=no-self-use
+    def _create_sql_cmd(self, table):
         '''Return create SQL command'''
 
-        cmd = 'CREATE TABLE IF NOT EXISTS {} (\n'.format(name)
+        cmd = 'CREATE TABLE IF NOT EXISTS {} (\n'.format(table)
         items = []
-        for column_name, column_type in columns.items():
+        for column_name, column_type in self.schema[table]['columns'].items():
             items += ['{} {}'.format(column_name, column_type.upper())]
         cmd += '\t' + ',\n\t'.join(items) + ',\n\t'
         cmd += 'PRIMARY KEY({} {})'.format(
-            primary_key['name'], primary_key['order'].upper())
+            self.schema[table]['primary_key']['name'],
+            self.schema[table]['primary_key']['order'].upper())
         cmd += '\n)'
         return cmd
 
     def _create(self):
         '''Prepare the structure if doesn't exist'''
 
-        with open('./data/tables.yaml', 'r') as stream:
-            tables = yaml.load(stream)
-
         sql_commands = []
-        for table in tables:
-            sql_command = self._create_sql_cmd(
-                table, tables[table]['columns'], tables[table]['primary_key'])
-            sql_commands.append(sql_command)
+        for table in self.schema:
+            sql_commands.append(self._create_sql_cmd(table))
 
         for sql_command in sql_commands:
             try:
