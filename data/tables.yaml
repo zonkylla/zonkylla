@@ -26,13 +26,13 @@ Loans:
     termInMonths: int
     interestRate: real
     rating: text
-    topped: int
+    topped: bool
     amount: real
     remainingInvestment: real
     investmentRate: real
-    covered: int
+    covered: bool
     datePublished: datetime
-    published: int
+    published: bool
     deadline: datetime
     investmentsCount: int
     questionsCount: int

@@ -27,13 +27,53 @@ class Database:
 
         self._create()
 
+    def _convert_value(self, table, key, value):  # pylint: disable=too-many-return-statements
+        '''Convert value due to database schema'''
+
+        value_type = self.schema[table]['columns'][key]
+
+        if value is None:
+            return None
+
+        if value_type == 'text':
+            return str(value)
+
+        if value_type == 'int':
+            return int(value)
+
+        if value_type == 'real':
+            return float(value)
+
+        if value_type == 'bool':
+            if 'true' in str(value).lower():
+                return 1
+            if 'false' in str(value).lower():
+                return 0
+            if int(value) == 1:
+                return 1
+            if int(value) == 0:
+                return 0
+
+            raise TypeError
+
+        if value_type == 'datetime':
+            return value
+
+        raise TypeError
+
     def _create_sql_cmd(self, table):
         '''Return create SQL command'''
 
         cmd = 'CREATE TABLE IF NOT EXISTS {} (\n'.format(table)
         items = []
         for column_name, column_type in self.schema[table]['columns'].items():
-            items += ['{} {}'.format(column_name, column_type.upper())]
+
+            col_type = column_type.upper()
+            if column_type == 'bool':
+                col_type = 'int'
+
+            items += ['{} {}'.format(column_name, col_type)]
+
         cmd += '\t' + ',\n\t'.join(items) + ',\n\t'
         cmd += 'PRIMARY KEY({} {})'.format(
             self.schema[table]['primary_key']['name'],
@@ -141,17 +181,7 @@ class Database:
                     continue
 
                 cols.append(key)
-
-                if key == 'photos':
-                    value = str(value)
-
-                if key in ['topped', 'covered', 'published']:
-                    value = 1 if value else 0
-
-                if key in ['region', 'purpose']:
-                    value = int(value)
-
-                row.append(value)
+                row.append(self._convert_value('Loans', key, value))
 
             rows.append((row))
             columns = ', '.join(cols)
@@ -188,7 +218,7 @@ class Database:
 
             for key, value in investment.items():
                 cols.append(key)
-                row.append(value)
+                row.append(self._convert_value('LoanInvestments', key, value))
 
             rows.append((row))
             columns = ', '.join(cols)
