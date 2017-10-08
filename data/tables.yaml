@@ -56,3 +56,46 @@ LoanInvestments:
   primary_key:
     name: id
     order: asc
+
+Investments:
+  columns:
+    id: int
+    loanId: int
+    loanName: text
+    investmentDate: datetime
+    amount: real
+    firstAmount: real
+    additionalAmount: real
+    purchasePrice: real
+    interestRate: real
+    nickname: text
+    firstName: text
+    surname: text
+    rating: text
+    paid: real
+    toPay: real
+    nextPaymentDate: datetime
+    paymentStatus: text
+    legalDpd: int
+    amountDue: real
+    loanTermInMonth: int
+    paidInterest: real
+    dueInterest: real
+    paidPrincipal: real
+    duePrincipal: real
+    remainingPrincipal: real
+    paidPenalty: real
+    smpSoldFor: real
+    expectedInterest: real
+    currentTerm: int
+    canBeOffered: bool
+    onSmp: bool
+    smpRelated: bool
+    remainingMonths: int
+    status: text
+    timeCreated: datetime
+    activeTo: datetime
+    smpFee: real
+  primary_key:
+    name: id
+    order: asc

@@ -28,3 +28,6 @@ def update_from_zonky(host, username, password):
     loan_investments = list(chain.from_iterable(
         [zonky.get_loan_investments(loan_id) for loan_id in loan_ids]))
     database.insert_loan_investments(loan_investments)
+
+    user_investments = zonky.get_user_investments()
+    database.insert_user_investments(user_investments)

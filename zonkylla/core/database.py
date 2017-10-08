@@ -227,3 +227,26 @@ class Database:
         sql = 'INSERT OR REPLACE INTO LoanInvestments({}) VALUES ({})'.format(
             columns, placeholders)
         self._execute(sql, rows)
+
+    def insert_user_investments(self, investments):
+        '''Add user's investments to the database'''
+
+        if not investments:
+            return
+
+        rows = []
+        for investment in investments:
+            row = []
+            cols = []
+
+            for key, value in investment.items():
+                cols.append(key)
+                row.append(self._convert_value('Investments', key, value))
+
+            rows.append((row))
+            columns = ', '.join(cols)
+            placeholders = ', '.join('?' * len(investment.keys()))
+
+        sql = 'INSERT OR REPLACE INTO Investments({}) VALUES ({})'.format(
+            columns, placeholders)
+        self._execute(sql, rows)
