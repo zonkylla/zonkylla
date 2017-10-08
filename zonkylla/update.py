@@ -31,3 +31,7 @@ def update_from_zonky(host, username, password):
 
     user_investments = zonky.get_user_investments()
     database.insert_user_investments(user_investments)
+
+    user_notifications = zonky.get_user_notifications()
+    database.insert_user_notifications(user_notifications)
+    database.update_user_notifications_relations()

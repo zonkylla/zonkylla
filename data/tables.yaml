@@ -1,4 +1,4 @@
-Transactions:
+a_transactions:
   columns:
     id: int
     amount: real
@@ -13,7 +13,7 @@ Transactions:
     name: id
     order: asc
 
-Loans:
+a_loans:
   columns:
     id: int
     url: text
@@ -42,7 +42,7 @@ Loans:
     name: id
     order: asc
 
-LoanInvestments:
+a_loan_investments:
   columns:
     id: int
     loanId: int
@@ -57,7 +57,7 @@ LoanInvestments:
     name: id
     order: asc
 
-Investments:
+a_investments:
   columns:
     id: int
     loanId: int
@@ -96,6 +96,28 @@ Investments:
     timeCreated: datetime
     activeTo: datetime
     smpFee: real
+  primary_key:
+    name: id
+    order: asc
+
+a_notifications:
+  columns:
+    id: int
+    date: datetime
+    visited: bool
+    text: text
+    link: text
+  primary_key:
+    name: id
+    order: asc
+
+z_notifications_relations:
+  columns:
+    id: int
+    notificationId: int
+    type: text
+    foreignId: id
+    foreignTable: text
   primary_key:
     name: id
     order: asc

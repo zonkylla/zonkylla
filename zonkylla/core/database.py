@@ -123,11 +123,11 @@ class Database:
 
     def insert_transactions(self, transactions):
         '''Add transactions to the database'''
-        self._insert_or_update('Transactions', transactions)
+        self._insert_or_update('a_transactions', transactions)
 
     def get_last_transaction_date(self):
         '''Get the datetime of last update'''
-        sql = 'SELECT MAX(transactionDate) FROM Transactions'
+        sql = 'SELECT MAX(transactionDate) FROM a_transactions'
         result = self._execute(sql).fetchone()
         dt_value = result[0]
 
@@ -135,29 +135,47 @@ class Database:
 
     def insert_loans(self, loans):
         '''Add loans to the database'''
-        self._insert_or_update('Loans', loans)
+        self._insert_or_update('a_loans', loans)
 
     def missing_loan_ids(self):
         '''Get loanId of loans which missing in Loans'''
 
         sql = '''
-            SELECT Transactions.loanId
-            FROM Transactions
-            LEFT JOIN Loans ON Transactions.loanId = Loans.id
-            WHERE Loans.id IS NULL
-            AND Transactions.loanId IS NOT NULL
-            GROUP BY Transactions.loanId;
+            SELECT a_transactions.loanId
+            FROM a_transactions
+            LEFT JOIN a_loans ON a_transactions.loanId = a_loans.id
+            WHERE a_loans.id IS NULL
+            AND a_transactions.loanId IS NOT NULL
+            GROUP BY a_transactions.loanId;
         '''
         results = self._execute(sql).fetchall()
         return list(map(lambda r: r['loanId'], results))
 
     def insert_loan_investments(self, investments):
         '''Add investments of loan to the database'''
-        self._insert_or_update('LoanInvestments', investments)
+        self._insert_or_update('a_loan_investments', investments)
 
     def insert_user_investments(self, investments):
         '''Add user's investments to the database'''
-        self._insert_or_update('Investments', investments)
+        self._insert_or_update('a_investments', investments)
+
+    def insert_user_notifications(self, notifications):
+        '''Add user's notifications'''
+        self._insert_or_update('a_notifications', notifications)
+
+    def update_user_notifications_relations(self):  # pylint: disable=no-self-use, invalid-name
+        '''Update of user 's notification's relations'''
+
+        sql = '''
+            SELECT a_notifications.id, link
+            FROM a_notifications
+            LEFT JOIN z_notifications_relations ON a_notifications.id = z_notifications_relations.notificationId
+            WHERE z_notifications_relations.notificationId IS NULL
+            AND a_notifications.id IS NOT NULL
+            GROUP BY a_notifications.id;
+        '''
+        # To be continued...
+        self.logger.info("sql: '%s'", sql)
 
     def _insert_or_update(self, table, data):
         '''Common insert or update query'''

@@ -295,3 +295,12 @@ class Zonky:
         headers['X-Order'] = 'timeCreated'
 
         return self._oauth_client.get('/users/me/investments', params, headers)
+
+    def get_user_notifications(self):
+        '''User's notifications'''
+
+        params = {}
+        headers = {}
+
+        return self._oauth_client.get(
+            '/users/me/notifications', params, headers)
