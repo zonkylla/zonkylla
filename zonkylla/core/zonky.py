@@ -270,3 +270,12 @@ class Zonky:
     def get_loan(self, loan_id):
         """Detail of loan"""
         return self._client.get('/loans/{}'.format(loan_id))
+
+    def get_loan_investments(self, loan_id):
+        """Loan's investments"""
+        params = {}
+        headers = {}
+
+        headers['X-Order'] = 'timeCreated'
+
+        return self._oauth_client.get('/loans/{}/investments'.format(loan_id), params, headers)

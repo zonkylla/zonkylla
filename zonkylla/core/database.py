@@ -170,3 +170,32 @@ class Database:
         except sqlite3.Error as err:
             print("sqlite3.Error occured: {}".format(err.args))
             raise
+
+    def insert_loan_investments(self, investments):
+        '''Add investments of loan to the database'''
+
+        if not investments:
+            return
+
+        rows = []
+        for investment in investments:
+            row = []
+            cols = []
+
+            for key, value in investment.items():
+                cols.append(key)
+                row.append(value)
+
+            rows.append((row))
+            columns = ', '.join(cols)
+            placeholders = ', '.join('?' * len(investment.keys()))
+
+        sql = 'INSERT OR REPLACE INTO LoanInvestments({}) VALUES ({})'.format(
+            columns, placeholders)
+        try:
+            with self.connection as con:
+                con = con.cursor()
+                con.executemany(sql, rows)
+        except sqlite3.Error as err:
+            print("sqlite3.Error occured: {}".format(err.args))
+            raise

@@ -5,6 +5,8 @@
 
 '''Data update by zonky'''
 
+from itertools import chain
+
 from .core.zonky import Zonky
 from .core.database import Database
 
@@ -22,3 +24,7 @@ def update_from_zonky(host, username, password):
     loan_ids = database.missing_loan_ids()
     missing_loans = [zonky.get_loan(loan_id) for loan_id in loan_ids]
     database.insert_loans(missing_loans)
+
+    loan_investments = list(chain.from_iterable(
+        [zonky.get_loan_investments(loan_id) for loan_id in loan_ids]))
+    database.insert_loan_investments(loan_investments)
