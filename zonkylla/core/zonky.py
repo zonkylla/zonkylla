@@ -8,6 +8,7 @@
 
 from abc import ABCMeta, abstractmethod
 from datetime import datetime, timedelta
+import logging
 from time import sleep
 import pkg_resources
 
@@ -33,6 +34,7 @@ class AbstractClient(metaclass=ABCMeta):
             'User-Agent': self._user_agent,
         }
         self._time_lock = datetime.now()
+        self.logger = logging.getLogger('zonkylla.AbstractClient')
 
     @property
     def zonky_api_version(self):
@@ -90,6 +92,7 @@ class AbstractClient(metaclass=ABCMeta):
                 headers['X-Page'] = str(xpage + 1)
                 result = result + self._request(method, url, params, headers)
 
+        self.logger.debug("Result: '%s'", result)
         return result
 
     @abstractmethod
@@ -164,6 +167,8 @@ class OAuthClient(
             'User-Agent': self._user_agent,
         }
 
+        self.logger = logging.getLogger('zonkylla.OAuthClient')
+
         auth = HTTPBasicAuth(self._client_id, self._client_secret)
 
         client = LegacyApplicationClient(
@@ -218,6 +223,7 @@ class Client(AbstractClient):
         """
 
         AbstractClient.__init__(self, host)
+        self.logger = logging.getLogger('zonkylla.Client')
 
     def _client(self):
         return requests
