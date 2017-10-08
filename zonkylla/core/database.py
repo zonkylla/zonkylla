@@ -123,38 +123,7 @@ class Database:
 
     def insert_transactions(self, transactions):
         '''Add transactions to the database'''
-
-        if not transactions:
-            return
-
-        data = []
-        for item in transactions:
-            data.append((
-                item['id'],
-                item['amount'],
-                item['category'],
-                item['customMessage'],
-                item['loanId'],
-                item['loanName'],
-                item['nickName'],
-                item['orientation'],
-                item['transactionDate']))
-
-        sql = '''
-            INSERT OR REPLACE INTO Transactions(
-                id,
-                amount,
-                category,
-                customMessage,
-                loanId,
-                loanName,
-                nickName,
-                orientation,
-                transactionDate
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-        '''
-
-        self._execute(sql, data)
+        self._insert_or_update('Transactions', transactions)
 
     def get_last_transaction_date(self):
         '''Get the datetime of last update'''
@@ -166,30 +135,7 @@ class Database:
 
     def insert_loans(self, loans):
         '''Add loans to the database'''
-
-        if not loans:
-            return
-
-        rows = []
-        for loan in loans:
-            row = []
-            cols = []
-
-            for key, value in loan.items():
-
-                if key in ['myOtherInvestments']:
-                    continue
-
-                cols.append(key)
-                row.append(self._convert_value('Loans', key, value))
-
-            rows.append((row))
-            columns = ', '.join(cols)
-            placeholders = ', '.join('?' * len(cols))
-
-        sql = 'INSERT OR REPLACE INTO Loans({}) VALUES ({})'.format(
-            columns, placeholders)
-        self._execute(sql, rows)
+        self._insert_or_update('Loans', loans)
 
     def missing_loan_ids(self):
         '''Get loanId of loans which missing in Loans'''
@@ -207,46 +153,36 @@ class Database:
 
     def insert_loan_investments(self, investments):
         '''Add investments of loan to the database'''
-
-        if not investments:
-            return
-
-        rows = []
-        for investment in investments:
-            row = []
-            cols = []
-
-            for key, value in investment.items():
-                cols.append(key)
-                row.append(self._convert_value('LoanInvestments', key, value))
-
-            rows.append((row))
-            columns = ', '.join(cols)
-            placeholders = ', '.join('?' * len(investment.keys()))
-
-        sql = 'INSERT OR REPLACE INTO LoanInvestments({}) VALUES ({})'.format(
-            columns, placeholders)
-        self._execute(sql, rows)
+        self._insert_or_update('LoanInvestments', investments)
 
     def insert_user_investments(self, investments):
         '''Add user's investments to the database'''
+        self._insert_or_update('Investments', investments)
 
-        if not investments:
+    def _insert_or_update(self, table, data):
+        '''Common insert or update query'''
+
+        if not data:
             return
 
         rows = []
-        for investment in investments:
+        for dat in data:
             row = []
             cols = []
 
-            for key, value in investment.items():
+            for key, value in dat.items():
+                # whitelisting only columns in schema
+                if key not in self.schema[table]['columns'].keys():
+                    self.logger.warning(
+                        "'%s.%s' present in API response but not in DB schema", table, key)
+                    continue
                 cols.append(key)
-                row.append(self._convert_value('Investments', key, value))
+                row.append(self._convert_value(table, key, value))
 
             rows.append((row))
             columns = ', '.join(cols)
-            placeholders = ', '.join('?' * len(investment.keys()))
+            placeholders = ', '.join('?' * len(cols))
 
-        sql = 'INSERT OR REPLACE INTO Investments({}) VALUES ({})'.format(
-            columns, placeholders)
+        sql = 'INSERT OR REPLACE INTO {}({}) VALUES ({})'.format(
+            table, columns, placeholders)
         self._execute(sql, rows)
