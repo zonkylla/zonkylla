@@ -53,6 +53,7 @@ class Database:
                     con.execute(sql_command)
             except sqlite3.Error as err:
                 print("sqlite3.Error occured: {}".format(err.args))
+                raise
 
     def insert_transactions(self, transactions):
         '''Add transactions to the database'''
@@ -91,6 +92,7 @@ class Database:
                 ''', data)
         except sqlite3.Error as err:
             print("sqlite3.Error occured: {}".format(err.args))
+            raise
 
     def get_last_transaction_date(self):
         '''Get the datetime of last update'''
@@ -101,6 +103,7 @@ class Database:
                 dt_value = con.fetchone()[0]
         except sqlite3.Error as err:
             print("sqlite3.Error occured: {}".format(err.args))
+            raise
 
         return iso2datetime(dt_value) if dt_value else None
 
@@ -145,6 +148,7 @@ class Database:
                 con.executemany(sql, rows)
         except sqlite3.Error as err:
             print("sqlite3.Error occured: {}".format(err.args))
+            raise
 
     def missing_loan_ids(self):
         '''Get loanId of loans which missing in Loans'''
@@ -165,3 +169,4 @@ class Database:
                 return list(map(lambda r: r['loanId'], results))
         except sqlite3.Error as err:
             print("sqlite3.Error occured: {}".format(err.args))
+            raise
