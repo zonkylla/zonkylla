@@ -18,6 +18,9 @@ import requests
 
 from .utils import datetime2iso
 
+DEFAULT_WAIT_TIME = 0.1
+DEFAULT_PAGE_SIZE = 100
+
 
 class AbstractClient(metaclass=ABCMeta):
     """Abstract class for Zonky clients"""
@@ -44,7 +47,7 @@ class AbstractClient(metaclass=ABCMeta):
     def _wait(self):
         '''Wait until time lock is released'''
         while datetime.now() < self._time_lock:
-            sleep(0.1)
+            sleep(DEFAULT_WAIT_TIME)
 
     def _update_time_lock(self):
         '''Set new time lock'''
@@ -66,7 +69,7 @@ class AbstractClient(metaclass=ABCMeta):
 
         headers.update(self._headers)
         headers.setdefault('X-Page', str(0))
-        headers.setdefault('X-Size', str(10))
+        headers.setdefault('X-Size', str(DEFAULT_PAGE_SIZE))
 
         self._wait()
         response = self._client().request(
