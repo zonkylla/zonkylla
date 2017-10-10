@@ -5,6 +5,7 @@
 
 '''Database module'''
 
+import ast
 import logging
 import sqlite3
 import yaml
@@ -54,12 +55,12 @@ class Database:
             if int(value) == 0:
                 return 0
 
-            raise TypeError
+            raise TypeError(table, key, value)
 
         if value_type == 'datetime':
             return value
 
-        raise TypeError
+        raise TypeError(table, key, value)
 
     def _create_sql_cmd(self, table):
         '''Return create SQL command'''
@@ -163,19 +164,57 @@ class Database:
         '''Add user's notifications'''
         self._insert_or_update('a_notifications', notifications)
 
-    def update_user_notifications_relations(self):  # pylint: disable=no-self-use, invalid-name
-        '''Update of user 's notification's relations'''
+    def missing_user_notifications_relations(self):  # pylint: disable=invalid-name
+        '''Get a_notifications.id, link of notifications without relations'''
 
         sql = '''
-            SELECT a_notifications.id, link
+            SELECT a_notifications.id AS nId, a_notifications.link AS nLink
             FROM a_notifications
             LEFT JOIN z_notifications_relations ON a_notifications.id = z_notifications_relations.notificationId
             WHERE z_notifications_relations.notificationId IS NULL
             AND a_notifications.id IS NOT NULL
             GROUP BY a_notifications.id;
         '''
-        # To be continued...
-        self.logger.info("sql: '%s'", sql)
+        results = self._execute(sql).fetchall()
+
+        return [{'id': r['nId'], 'link': r['nLink']} for r in results]
+
+    def update_user_notifications_relations(self):  # pylint: disable=invalid-name
+        '''Update of user 's notification's relations'''
+
+        missing_data = self.missing_user_notifications_relations()
+
+        notification_relations = []
+        for data in missing_data:
+            link = ast.literal_eval(data['link'])
+            relation_type = link['type']
+
+            if link['type'] == 'WALLET_INCOMING':
+                foreign_id = link['params']['walletId']
+                foreign_table = 'wallet'
+
+            elif link['type'] == 'LOAN_SUCCESS':
+                foreign_id = link['params']['loanId']
+                foreign_table = 'a_loans'
+
+            elif link['type'] == 'LOAN_PREPAYMENT':
+                foreign_id = link['params']['loanId']
+                foreign_table = 'a_loans'
+
+            else:
+                self.logger.warning(
+                    "'%s' is new notification's type, patch is needed",
+                    link['type'])
+                continue
+
+            notification_relations.append({'notificationId': data['id'],
+                                           'relationType': relation_type,
+                                           'foreignId': foreign_id,
+                                           'foreignTable': foreign_table})
+
+        self._insert_or_update(
+            'z_notifications_relations',
+            notification_relations)
 
     def _insert_or_update(self, table, data):
         '''Common insert or update query'''

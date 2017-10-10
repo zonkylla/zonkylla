@@ -113,11 +113,10 @@ a_notifications:
 
 z_notifications_relations:
   columns:
-    id: int
     notificationId: int
-    type: text
-    foreignId: id
+    relationType: text
+    foreignId: int
     foreignTable: text
   primary_key:
-    name: id
+    name: notificationId
     order: asc
