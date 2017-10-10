@@ -1,6 +1,6 @@
 repos:
 -   repo: git://github.com/pre-commit/pre-commit-hooks
-    sha: v0.9.5
+    sha: v1.0.0
     hooks:
     -   id: trailing-whitespace
         name: Trim Trailing Whitespace
