@@ -182,6 +182,12 @@ class Database:
     def update_user_notifications_relations(self):  # pylint: disable=invalid-name
         '''Update of user 's notification's relations'''
 
+        loan_link_type = [
+            'LOAN_SUCCESS',
+            'LOAN_PREPAYMENT',
+            'LOAN_DELAY_INVESTOR',
+            'BORROWER_HEAL']
+
         missing_data = self.missing_user_notifications_relations()
 
         notification_relations = []
@@ -193,11 +199,7 @@ class Database:
                 foreign_id = link['params']['walletId']
                 foreign_table = 'wallet'
 
-            elif link['type'] == 'LOAN_SUCCESS':
-                foreign_id = link['params']['loanId']
-                foreign_table = 'a_loans'
-
-            elif link['type'] == 'LOAN_PREPAYMENT':
+            elif link['type'] in loan_link_type:
                 foreign_id = link['params']['loanId']
                 foreign_table = 'a_loans'
 
