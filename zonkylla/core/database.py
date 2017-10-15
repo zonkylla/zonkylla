@@ -28,39 +28,41 @@ class Database:
 
         self._create()
 
-    def _convert_value(self, table, key, value):  # pylint: disable=too-many-return-statements
+    def _convert_value(self, table, key, value):
         '''Convert value due to database schema'''
 
-        value_type = self.schema[table]['columns'][key]
+        def convert_bool(value):
+            '''Convert bool to str'''
+
+            if 'true' in str(value).lower():
+                value = 1
+            elif 'false' in str(value).lower():
+                value = 0
+            elif int(value) == 1:
+                value = 1
+            elif int(value) == 0:
+                value = 0
+
+            return value
+            # end of function
 
         if value is None:
             return None
 
-        if value_type == 'text':
-            return str(value)
+        value_type = self.schema[table]['columns'][key]
 
-        if value_type == 'int':
-            return int(value)
+        value_convertion = {
+            'text': str,
+            'int': int,
+            'real': float,
+            'bool': convert_bool,
+            'datetime': (lambda v: v),
+        }
 
-        if value_type == 'real':
-            return float(value)
-
-        if value_type == 'bool':
-            if 'true' in str(value).lower():
-                return 1
-            if 'false' in str(value).lower():
-                return 0
-            if int(value) == 1:
-                return 1
-            if int(value) == 0:
-                return 0
-
+        try:
+            return value_convertion[value_type](value)
+        except:
             raise TypeError(table, key, value)
-
-        if value_type == 'datetime':
-            return value
-
-        raise TypeError(table, key, value)
 
     def _create_sql_cmd(self, table):
         '''Return create SQL command'''
