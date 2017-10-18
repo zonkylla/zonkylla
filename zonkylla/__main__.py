@@ -6,6 +6,7 @@
 """zonkylla
 Usage:
   zonkylla.py [-t] [-d] update <user>
+  zonkylla.py [-d] loans
   zonkylla.py (-h | --help)
   zonkylla.py --api-version
   zonkylla.py --version
@@ -27,6 +28,7 @@ import pkg_resources
 
 from .core.zonky import Zonky
 from .update import update_from_zonky
+from .core.models import Loan
 
 
 def get_host(args):
@@ -82,6 +84,10 @@ def main():
     if args['update']:
         update_from_zonky(host, username, password)
         return
+
+    if args['loans']:
+        loans = Loan.all()
+        print(loans)
 
 
 if __name__ == '__main__':

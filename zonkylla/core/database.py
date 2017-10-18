@@ -166,6 +166,30 @@ class Database:
 
         return iso2datetime(dt_value) if dt_value else None
 
+    def get_loan(self, loan_id):
+        '''Returns a loan data'''
+
+        select_sql = '*'
+
+        sql = 'SELECT {} FROM a_loans WHERE id == {}'.format(
+            select_sql, loan_id)
+
+        return self._execute(sql).fetchone()
+
+    def get_loans(self, loan_ids=None):
+        '''Returns multiple loans data'''
+
+        select_sql = '*'
+        if isinstance(loan_ids, list):
+            loan_ids_sql = 'WHERE id IN (' + ', '.join(
+                [str(loan_id) for loan_id in loan_ids]) + ')'
+        else:
+            loan_ids_sql = ''
+
+        sql = 'SELECT {} FROM a_loans {}'.format(select_sql, loan_ids_sql)
+        result = self._execute(sql).fetchall()
+        return result
+
     def missing_loan_ids(self):
         '''Get loanId of loans which missing in Loans'''
 
