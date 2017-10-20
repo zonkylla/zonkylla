@@ -124,6 +124,34 @@ class Database:
             print("sqlite3.Error occured: {}".format(err.args))
             raise
 
+    def _insert_or_update(self, table, data):
+        '''Common insert or update query'''
+
+        if not data:
+            return
+
+        rows = []
+        for dat in data:
+            row = []
+            cols = []
+
+            for key, value in dat.items():
+                # whitelisting only columns in schema
+                if key not in self.schema[table]['columns'].keys():
+                    self.logger.warning(
+                        "'%s.%s' present in API response but not in DB schema", table, key)
+                    continue
+                cols.append(key)
+                row.append(self._convert_value(table, key, value))
+
+            rows.append((row))
+            columns = ', '.join(cols)
+            placeholders = ', '.join('?' * len(cols))
+
+        sql = 'INSERT OR REPLACE INTO {}({}) VALUES ({})'.format(
+            table, columns, placeholders)
+        self._execute(sql, rows)
+
     def insert_transactions(self, transactions):
         '''Add transactions to the database'''
         self._insert_or_update('a_transactions', transactions)
@@ -219,31 +247,3 @@ class Database:
         self._insert_or_update(
             'z_notifications_relations',
             notification_relations)
-
-    def _insert_or_update(self, table, data):
-        '''Common insert or update query'''
-
-        if not data:
-            return
-
-        rows = []
-        for dat in data:
-            row = []
-            cols = []
-
-            for key, value in dat.items():
-                # whitelisting only columns in schema
-                if key not in self.schema[table]['columns'].keys():
-                    self.logger.warning(
-                        "'%s.%s' present in API response but not in DB schema", table, key)
-                    continue
-                cols.append(key)
-                row.append(self._convert_value(table, key, value))
-
-            rows.append((row))
-            columns = ', '.join(cols)
-            placeholders = ', '.join('?' * len(cols))
-
-        sql = 'INSERT OR REPLACE INTO {}({}) VALUES ({})'.format(
-            table, columns, placeholders)
-        self._execute(sql, rows)
