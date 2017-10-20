@@ -106,42 +106,18 @@ class AbstractClient(metaclass=ABCMeta):
 
     def get(self, url, params=None, headers=None):
         """GET Method"""
-
-        if params is None:
-            params = {}
-        if headers is None:
-            headers = {}
-
         return self._request('GET', url, params, headers)
 
     def post(self, url, params=None, headers=None):
         """POST Method"""
-
-        if params is None:
-            params = {}
-        if headers is None:
-            headers = {}
-
         return self._request('POST', url, params, headers)
 
     def patch(self, url, params=None, headers=None):
         """PATCH Method"""
-
-        if params is None:
-            params = {}
-        if headers is None:
-            headers = {}
-
         return self._request('PATCH', url, params, headers)
 
     def delete(self, url, params=None, headers=None):
         """DELETE Method"""
-
-        if params is None:
-            params = {}
-        if headers is None:
-            headers = {}
-
         return self._request('DELETE', url, params, headers)
 
 
