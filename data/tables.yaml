@@ -84,7 +84,7 @@ a_loan_investments:
     name: id
     order: asc
 
-a_investments:
+a_user_investments:
   columns:
     id: int
     loanId: int

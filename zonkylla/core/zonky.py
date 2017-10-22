@@ -323,7 +323,9 @@ class Zonky:
         database.insert_or_update('a_loan_investments', loan_investments)
 
         print('# Download user investments')
-        database.insert_or_update('a_investments', self.get_user_investments())
+        database.insert_or_update(
+            'a_user_investments',
+            self.get_user_investments())
 
         print('# Download user notifications')
         database.insert_or_update(
