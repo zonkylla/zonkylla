@@ -10,6 +10,7 @@ from abc import ABCMeta, abstractmethod
 from datetime import datetime, timedelta
 import logging
 from time import sleep
+from urllib.parse import urljoin
 import pkg_resources
 
 from oauthlib.oauth2 import LegacyApplicationClient
@@ -55,11 +56,15 @@ class AbstractClient(metaclass=ABCMeta):
         '''Set new time lock'''
         self._time_lock = datetime.now() + timedelta(milliseconds=500)
 
+    def _join_url(self, url_parts):
+        '''Join url'''
+        return urljoin(self._host, '/'.join(s.strip('/') for s in url_parts))
+
     def _request(self, method, url, params=None, headers=None):
         """Method for sending of request to Zonky
 
         :param method:  GET, POST, PATCH, DELETE
-        :param url:     complete url
+        :param url:     url as tuple without base
         :param data:    data
         :return:        json with result
         """
@@ -76,7 +81,7 @@ class AbstractClient(metaclass=ABCMeta):
         self._wait()
         response = self._client().request(
             method.lower(),
-            '{}{}'.format(self._host, url),
+            self._join_url(url),
             params=params,
             headers=headers,
             **self._additional_params()
@@ -135,7 +140,7 @@ class OAuthClient(
         AbstractClient.__init__(self, host)
         self._client_id = 'web'
         self._client_secret = 'web'
-        self._token_url = '{}/oauth/token'.format(self._host)
+        self._token_url = self._join_url(('oauth', 'token'))
         self._scope = ['SCOPE_APP_WEB']
         self._token_headers = {
             'Accept': 'application/json',
@@ -230,11 +235,12 @@ class Zonky:
 
     def get_wallet(self):
         """Wallet"""
-        return self._oauth_client.get('/users/me/wallet')
+        return self._oauth_client.get(('users', 'me', 'wallet'))
 
     def get_blocked_amounts(self):
         """Blocked amounts"""
-        return self._oauth_client.get('/users/me/wallet/blocked-amounts')
+        return self._oauth_client.get(
+            ('users', 'me', 'wallet', 'blocked-amounts'))
 
     def get_transactions(self, from_dt=None):
         """List of transactions"""
@@ -247,15 +253,15 @@ class Zonky:
         headers['X-Order'] = 'transaction.transactionDate'
 
         return self._oauth_client.get(
-            '/users/me/wallet/transactions', params, headers)
+            ('users', 'me', 'wallet', 'transactions'), params, headers)
 
     def get_loans(self):
         """List of loans on zonky"""
-        return self._client.get('/loans/marketplace')
+        return self._client.get(('loans', 'marketplace'))
 
     def get_loan(self, loan_id):
         """Detail of loan"""
-        return self._client.get('/loans/{}'.format(loan_id))
+        return self._client.get(('loans', str(loan_id)))
 
     def get_loan_investments(self, loan_id):
         """Loan's investments"""
@@ -265,7 +271,7 @@ class Zonky:
         headers['X-Order'] = 'timeCreated'
 
         return self._oauth_client.get(
-            '/loans/{}/investments'.format(loan_id), params, headers)
+            ('loans', str(loan_id), 'investments'), params, headers)
 
     def get_user_investments(self):
         """User's investments"""
@@ -274,7 +280,8 @@ class Zonky:
 
         headers['X-Order'] = 'timeCreated'
 
-        return self._oauth_client.get('/users/me/investments', params, headers)
+        return self._oauth_client.get(
+            ('users', 'me', 'investments'), params, headers)
 
     def get_user_notifications(self):
         '''User's notifications'''
@@ -283,4 +290,4 @@ class Zonky:
         headers = {}
 
         return self._oauth_client.get(
-            '/users/me/notifications', params, headers)
+            ('users', 'me', 'notifications'), params, headers)
