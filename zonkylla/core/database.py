@@ -130,7 +130,7 @@ class Database:
             print("sqlite3.Error occured: {}".format(err.args))
             raise
 
-    def _insert_or_update(self, table, data):
+    def insert_or_update(self, table, data):
         '''Common insert or update query'''
 
         if not data:
@@ -158,10 +158,6 @@ class Database:
             table, columns, placeholders)
         self._execute(sql, rows)
 
-    def insert_transactions(self, transactions):
-        '''Add transactions to the database'''
-        self._insert_or_update('a_transactions', transactions)
-
     def get_last_transaction_date(self):
         '''Get the datetime of last update'''
         sql = 'SELECT MAX(transactionDate) FROM a_transactions'
@@ -169,10 +165,6 @@ class Database:
         dt_value = result[0]
 
         return iso2datetime(dt_value) if dt_value else None
-
-    def insert_loans(self, loans):
-        '''Add loans to the database'''
-        self._insert_or_update('a_loans', loans)
 
     def missing_loan_ids(self):
         '''Get loanId of loans which missing in Loans'''
@@ -187,26 +179,6 @@ class Database:
         '''
         results = self._execute(sql).fetchall()
         return list(map(lambda r: r['loanId'], results))
-
-    def insert_loan_investments(self, investments):
-        '''Add investments of loan to the database'''
-        self._insert_or_update('a_loan_investments', investments)
-
-    def insert_user_investments(self, investments):
-        '''Add user's investments to the database'''
-        self._insert_or_update('a_investments', investments)
-
-    def insert_user_notifications(self, notifications):
-        '''Add user's notifications'''
-        self._insert_or_update('a_notifications', notifications)
-
-    def insert_wallet(self, wallet):
-        '''Add user's notifications'''
-        self._insert_or_update('a_wallet', wallet)
-
-    def insert_blocked_amounts(self, blocked_amounts):
-        '''Add user's notifications'''
-        self._insert_or_update('a_blocked_amounts', blocked_amounts)
 
     def missing_user_notifications_relations(self):  # pylint: disable=invalid-name
         '''Get a_notifications.id, link of notifications without relations'''
@@ -258,6 +230,6 @@ class Database:
                                            'foreignId': foreign_id,
                                            'foreignTable': foreign_table})
 
-        self._insert_or_update(
+        self.insert_or_update(
             'z_notifications_relations',
             notification_relations)

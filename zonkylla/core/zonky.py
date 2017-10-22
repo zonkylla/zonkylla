@@ -10,6 +10,7 @@ from abc import ABCMeta, abstractmethod
 from datetime import datetime, timedelta
 import logging
 from time import sleep
+from itertools import chain
 from urllib.parse import urljoin
 import pkg_resources
 
@@ -291,3 +292,43 @@ class Zonky:
 
         return self._oauth_client.get(
             ('users', 'me', 'notifications'), params, headers)
+
+    def update(self, database):
+        '''Update all data for user from zonky'''
+
+        last_dt = database.get_last_transaction_date()
+
+        print('# Download wallet')
+        database.insert_or_update('a_wallet', [self.get_wallet()])
+
+        print('# Download blocked amounts')
+        database.insert_or_update(
+            'a_blocked_amounts',
+            self.get_blocked_amounts())
+
+        print('# Update transactions')
+        database.insert_or_update(
+            'a_transactions',
+            self.get_transactions(
+                from_dt=last_dt))
+
+        print('# Download missing loans')
+        loan_ids = database.missing_loan_ids()
+        missing_loans = [self.get_loan(loan_id) for loan_id in loan_ids]
+        database.insert_or_update('a_loans', missing_loans)
+
+        print('# Download loan investments')
+        loan_investments = list(chain.from_iterable(
+            [self.get_loan_investments(loan_id) for loan_id in loan_ids]))
+        database.insert_or_update('a_loan_investments', loan_investments)
+
+        print('# Download user investments')
+        database.insert_or_update('a_investments', self.get_user_investments())
+
+        print('# Download user notifications')
+        database.insert_or_update(
+            'a_notifications',
+            self.get_user_notifications())
+
+        print('# Calculate notification relations')
+        database.update_user_notifications_relations()
