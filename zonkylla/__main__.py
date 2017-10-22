@@ -88,7 +88,7 @@ def main():
 
     if args['loans']:
         loans = Loan.all()
-        print(loans)
+        print('---\n'.join([str(loan) for loan in loans]))
         return
 
 

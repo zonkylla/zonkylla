@@ -78,7 +78,11 @@ class AbstractModel(metaclass=ABCMeta):
             setattr(self, key, data[key])
 
     def __str__(self):
-        return str(self.__dict__)
+        result = ''
+        result += type(self).__name__ + ':\n'
+        for key, value in self.__dict__.items():
+            result += key + ': ' + str(value) + '\n'
+        return result
 
 
 class Loan(AbstractModel):
