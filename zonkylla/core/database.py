@@ -81,20 +81,6 @@ class DatabaseClient:
         result = self.dbase.execute(sql).fetchall()
         return result
 
-    def missing_loan_ids(self):
-        '''Get loanId of loans which missing in Loans'''
-
-        sql = '''
-            SELECT a_transactions.loanId
-            FROM a_transactions
-            LEFT JOIN a_loans ON a_transactions.loanId = a_loans.id
-            WHERE a_loans.id IS NULL
-            AND a_transactions.loanId IS NOT NULL
-            GROUP BY a_transactions.loanId;
-        '''
-        results = self.dbase.execute(sql).fetchall()
-        return list(map(lambda r: r['loanId'], results))
-
     def missing_user_notifications_relations(self):  # pylint: disable=invalid-name
         '''Get a_notifications.id, link of notifications without relations'''
 

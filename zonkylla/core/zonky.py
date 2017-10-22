@@ -304,24 +304,25 @@ class Zonky:
         print('# Download blocked amounts')
         database.insert_blocked_amounts(self.get_blocked_amounts())
 
-        print('# Update transactions')
-        database.insert_transactions(self.get_transactions(from_dt=last_dt))
-
-        print('# Download missing loans')
-        loan_ids = database.missing_loan_ids()
-        missing_loans = [self.get_loan(loan_id) for loan_id in loan_ids]
-        database.insert_loans(missing_loans)
-
-        print('# Download loan investments')
-        loan_investments = list(chain.from_iterable(
-            [self.get_loan_investments(loan_id) for loan_id in loan_ids]))
-        database.insert_loan_investments(loan_investments)
-
-        print('# Download user investments')
-        database.insert_user_investments(self.get_user_investments())
-
         print('# Download user notifications')
         database.insert_user_notifications(self.get_user_notifications())
 
         print('# Calculate notification relations')
         database.update_user_notifications_relations()
+
+        print('# Update transactions')
+        transactions = self.get_transactions(from_dt=last_dt)
+        updated_loan_ids = [trans['loanId'] for trans in transactions]
+        database.insert_transactions(transactions)
+
+        print('# Download missing loans')
+        missing_loans = [self.get_loan(loan_id) for loan_id in updated_loan_ids]
+        database.insert_loans(missing_loans)
+
+        print('# Download loan investments')
+        loan_investments = list(chain.from_iterable(
+            [self.get_loan_investments(loan_id) for loan_id in updated_loan_ids]))
+        database.insert_loan_investments(loan_investments)
+
+        print('# Download user investments')
+        database.insert_user_investments(self.get_user_investments())
