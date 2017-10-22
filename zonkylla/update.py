@@ -6,13 +6,13 @@
 '''Data update by zonky'''
 
 from .core.zonky import Zonky
-from .core.database import Database
+from .core.database import DatabaseClient
 
 
 def update_from_zonky(host, username, password):
     """Update all data for user from zonky"""
 
     zonky = Zonky(host, username, password)
-    database = Database()
+    database = DatabaseClient()
 
     zonky.update(database)
