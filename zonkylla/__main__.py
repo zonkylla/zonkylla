@@ -78,16 +78,18 @@ def main():
     if args['-d']:
         logging.basicConfig(level=logging.DEBUG)
 
-    username = args['<user>']
-    password = get_password()
-
     if args['update']:
+
+        username = args['<user>']
+        password = get_password()
+
         update_from_zonky(host, username, password)
         return
 
     if args['loans']:
         loans = Loan.all()
         print(loans)
+        return
 
 
 if __name__ == '__main__':
