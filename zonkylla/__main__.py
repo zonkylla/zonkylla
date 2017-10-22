@@ -7,6 +7,10 @@
 Usage:
   zonkylla.py [-t] [-d] update <user>
   zonkylla.py [-d] loans
+  zonkylla.py [-d] loan-investments
+  zonkylla.py [-d] user-investments
+  zonkylla.py [-d] transactions
+  zonkylla.py [-d] notifications
   zonkylla.py (-h | --help)
   zonkylla.py --api-version
   zonkylla.py --version
@@ -28,7 +32,7 @@ import pkg_resources
 
 from .core.zonky import Zonky
 from .update import update_from_zonky
-from .core.models import Loan
+from .core.models import Loan, LoanInvestment, UserInvestment, Transaction, Notification
 
 
 def get_host(args):
@@ -60,6 +64,16 @@ def get_password():
     return password
 
 
+def print_list(items=None):
+    '''Prints content of a list or do nothing'''
+    if items is None:
+        return
+    elif isinstance(items, list):
+        print('---\n'.join([str(item) for item in items]))
+    else:
+        return
+
+
 def main():
     """
     Entry point
@@ -87,9 +101,24 @@ def main():
         return
 
     if args['loans']:
-        loans = Loan.all()
-        print('---\n'.join([str(loan) for loan in loans]))
-        return
+        items = Loan.all()
+        print_list(items)
+
+    if args['loan-investments']:
+        items = LoanInvestment.all()
+        print_list(items)
+
+    if args['user-investments']:
+        items = UserInvestment.all()
+        print_list(items)
+
+    if args['transactions']:
+        items = Transaction.all()
+        print_list(items)
+
+    if args['notifications']:
+        items = Notification.all()
+        print_list(items)
 
 
 if __name__ == '__main__':

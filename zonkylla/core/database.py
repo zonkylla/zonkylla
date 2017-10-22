@@ -12,7 +12,7 @@ from zonkylla.abstract.abs_database import Database
 from zonkylla.core.utils import iso2datetime
 
 
-class DatabaseClient:
+class DatabaseClient:  # pylint: disable=too-many-public-methods
     '''Connection with sqlite3 database'''
 
     def __init__(self):
@@ -64,6 +64,38 @@ class DatabaseClient:
     def get_loans(self, loan_ids=None):
         '''Returns multiple loans data'''
         return self.dbase.get_all('a_loans', loan_ids)
+
+    def get_loan_investment(self, loan_investment_id):
+        '''Returns a loan investment data'''
+        return self.dbase.get_one('a_loan_investments', loan_investment_id)
+
+    def get_loan_investments(self, loan_investment_ids=None):
+        '''Returns multiple loan investments data'''
+        return self.dbase.get_all('a_loan_investments', loan_investment_ids)
+
+    def get_user_investment(self, user_investment_id):
+        '''Returns a user investment data'''
+        return self.dbase.get_one('a_user_investments', user_investment_id)
+
+    def get_user_investments(self, user_investment_ids=None):
+        '''Returns multiget_user investments data'''
+        return self.dbase.get_all('a_user_investments', user_investment_ids)
+
+    def get_transaction(self, transaction_id):
+        '''Returns a transaction data'''
+        return self.dbase.get_one('a_transactions', transaction_id)
+
+    def get_transactions(self, transaction_ids=None):
+        '''Returns multiple transactions data'''
+        return self.dbase.get_all('a_transactions', transaction_ids)
+
+    def get_notification(self, notification_id):
+        '''Returns a notification data'''
+        return self.dbase.get_one('a_notifications', notification_id)
+
+    def get_notifications(self, notification_ids=None):
+        '''Returns multiple notifications data'''
+        return self.dbase.get_all('a_notifications', notification_ids)
 
     def missing_user_notifications_relations(self):  # pylint: disable=invalid-name
         '''Get a_notifications.id, link of notifications without relations'''

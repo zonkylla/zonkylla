@@ -72,7 +72,8 @@ class AbstractModel(metaclass=ABCMeta):
         self.logger = logging.getLogger(
             'zonkylla.Models.{}'.format(type(self).__name__))
 
-        self.logger.debug('Initializing %s with ID: %s', type(self).__name__, data['id'])
+        self.logger.debug('Initializing %s with ID: %s',
+                          type(self).__name__, data['id'])
 
         for key in list(data.keys()):
             setattr(self, key, data[key])
@@ -93,4 +94,48 @@ class Loan(AbstractModel):
 
     def __init__(self, data):
         '''Init Loan using id'''
+        AbstractModel.__init__(self, data)
+
+
+class LoanInvestment(AbstractModel):
+    '''LoanInvestment model'''
+
+    _get_one_database_method_name = 'get_loan_investment'
+    _get_all_database_method_name = 'get_loan_investments'
+
+    def __init__(self, data):
+        '''Init LoanInvestment using id'''
+        AbstractModel.__init__(self, data)
+
+
+class UserInvestment(AbstractModel):
+    '''UserInvestment model'''
+
+    _get_one_database_method_name = 'get_user_investment'
+    _get_all_database_method_name = 'get_user_investments'
+
+    def __init__(self, data):
+        '''Init UserInvestment using id'''
+        AbstractModel.__init__(self, data)
+
+
+class Transaction(AbstractModel):
+    '''Transaction model'''
+
+    _get_one_database_method_name = 'get_transaction'
+    _get_all_database_method_name = 'get_transactions'
+
+    def __init__(self, data):
+        '''Init Transaction using id'''
+        AbstractModel.__init__(self, data)
+
+
+class Notification(AbstractModel):
+    '''Notification model'''
+
+    _get_one_database_method_name = 'get_notification'
+    _get_all_database_method_name = 'get_notifications'
+
+    def __init__(self, data):
+        '''Init Notification using id'''
         AbstractModel.__init__(self, data)
