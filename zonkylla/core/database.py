@@ -59,27 +59,11 @@ class DatabaseClient:
 
     def get_loan(self, loan_id):
         '''Returns a loan data'''
-
-        select_sql = '*'
-
-        sql = 'SELECT {} FROM a_loans WHERE id == {}'.format(
-            select_sql, loan_id)
-
-        return self.dbase.execute(sql).fetchone()
+        return self.dbase.get_one('a_loans', loan_id)
 
     def get_loans(self, loan_ids=None):
         '''Returns multiple loans data'''
-
-        select_sql = '*'
-        if isinstance(loan_ids, list):
-            loan_ids_sql = 'WHERE id IN (' + ', '.join(
-                [str(loan_id) for loan_id in loan_ids]) + ')'
-        else:
-            loan_ids_sql = ''
-
-        sql = 'SELECT {} FROM a_loans {}'.format(select_sql, loan_ids_sql)
-        result = self.dbase.execute(sql).fetchall()
-        return result
+        return self.dbase.get_all('a_loans', loan_ids)
 
     def missing_user_notifications_relations(self):  # pylint: disable=invalid-name
         '''Get a_notifications.id, link of notifications without relations'''

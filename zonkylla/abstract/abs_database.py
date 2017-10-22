@@ -154,3 +154,23 @@ class Database:
         sql = 'INSERT OR REPLACE INTO {}({}) VALUES ({})'.format(
             table, columns, placeholders)
         self.execute(sql, rows)
+
+    def get_one(self, table, record_id):
+        '''Returns data from one row of a table'''
+        select_sql = '*'
+        sql = 'SELECT {} FROM {} WHERE id == {}'.format(
+            select_sql, table, record_id)
+        return self.execute(sql).fetchone()
+
+    def get_all(self, table, record_ids=None):
+        '''Returns multiple data from multiple rows of a table'''
+
+        select_sql = '*'
+        if isinstance(record_ids, list):
+            record_ids_sql = 'WHERE id IN (' + ', '.join(
+                [str(record_id) for record_id in record_ids]) + ')'
+        else:
+            record_ids_sql = ''
+
+        sql = 'SELECT {} FROM {} {}'.format(select_sql, table, record_ids_sql)
+        return self.execute(sql).fetchall()
