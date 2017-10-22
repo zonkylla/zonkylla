@@ -19,6 +19,14 @@ def update_from_zonky(host, username, password):
 
     zonky = Zonky(host, username, password)
 
+    print('# Download wallet')
+    wallet = zonky.get_wallet()
+    database.insert_wallet([wallet])
+
+    print('# Download blocked amounts')
+    blocked_amounts = zonky.get_blocked_amounts()
+    database.insert_blocked_amounts(blocked_amounts)
+
     print('# Update transactions')
     transactions = zonky.get_transactions(from_dt=last_dt)
     database.insert_transactions(transactions)

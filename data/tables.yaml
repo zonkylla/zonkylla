@@ -1,3 +1,30 @@
+a_wallet:
+  columns:
+    id: int
+    balance: real
+    availableBalance: real
+    blockedBalance: real
+    creditSum: real
+    debitSum: real
+    variableSymbol: int
+    account: text
+    timestamp: datetime
+  primary_key:
+    name: id
+    order: asc
+
+a_blocked_amounts:
+  columns:
+    id: int
+    amount: real
+    category: text
+    dateStart: datetime
+    loanId: int
+    loanName: text
+  primary_key:
+    name: id
+    order: asc
+
 a_transactions:
   columns:
     id: int

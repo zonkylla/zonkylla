@@ -27,6 +27,8 @@ class Database:
             self.schema = yaml.load(stream)
 
         self._create()
+        self._clear_table('a_wallet')
+        self._clear_table('a_blocked_amounts')
 
     def _convert_value(self, table, key, value):
         '''Convert value due to database schema'''
@@ -93,6 +95,10 @@ class Database:
 
         for sql_command in sql_commands:
             self._execute(sql_command)
+
+    def _clear_table(self, table):
+        sql_command = 'DELETE FROM {}'.format(table)
+        self._execute(sql_command)
 
     def _execute(self, sql, data=None):
         """Executes SQL query with or without data"""
@@ -193,6 +199,14 @@ class Database:
     def insert_user_notifications(self, notifications):
         '''Add user's notifications'''
         self._insert_or_update('a_notifications', notifications)
+
+    def insert_wallet(self, wallet):
+        '''Add user's notifications'''
+        self._insert_or_update('a_wallet', wallet)
+
+    def insert_blocked_amounts(self, blocked_amounts):
+        '''Add user's notifications'''
+        self._insert_or_update('a_blocked_amounts', blocked_amounts)
 
     def missing_user_notifications_relations(self):  # pylint: disable=invalid-name
         '''Get a_notifications.id, link of notifications without relations'''

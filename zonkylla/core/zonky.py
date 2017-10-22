@@ -232,6 +232,10 @@ class Zonky:
         """Wallet"""
         return self._oauth_client.get('/users/me/wallet')
 
+    def get_blocked_amounts(self):
+        """Blocked amounts"""
+        return self._oauth_client.get('/users/me/wallet/blocked-amounts')
+
     def get_transactions(self, from_dt=None):
         """List of transactions"""
         params = {}
