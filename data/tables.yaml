@@ -61,6 +61,7 @@ a_loans:
     remainingInvestment: real
     investmentRate: real
     covered: bool
+    questionsAllowed: bool
     datePublished: datetime
     published: bool
     deadline: datetime

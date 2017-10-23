@@ -10,7 +10,7 @@ import sqlite3
 import sys
 import yaml
 
-DB_VERSION = 1
+DB_VERSION = 2
 
 
 class Database:
