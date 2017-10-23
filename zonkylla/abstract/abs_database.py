@@ -75,21 +75,22 @@ class Database:
         cmd = 'CREATE TABLE IF NOT EXISTS {} (\n'.format(table)
         items = []
 
+        pk_col_type = 'INTEGER PRIMARY KEY {}'.format(
+            self.schema[table]['primary_key']['order'].upper())
+        is_autoincrement = self.schema[table]['primary_key']['autoincrement']
+
         for column_name, column_type in self.schema[table]['columns'].items():
 
             col_type = column_type.upper()
             if column_type == 'bool':
                 col_type = 'INT'
 
-            is_primary_key = self.schema[table]['primary_key']['name'] == column_name
-            is_autoincrement = self.schema[table]['primary_key']['autoincrement']
+            is_pk = self.schema[table]['primary_key']['name'] == column_name
+            is_auto = is_pk and is_autoincrement
 
-            aug_col_type = 'INTEGER PRIMARY KEY' if is_primary_key else col_type
-            aug_col_type += ' {}'.format(self.schema[table]['primary_key']
-                                         ['order'].upper()) if is_primary_key else ''
-            aug_col_type += ' AUTOINCREMENT' if is_primary_key and is_autoincrement else ''
-
-            items += ['{} {}'.format(column_name, aug_col_type)]
+            items += ['{} {} {}'.format(column_name,
+                                        pk_col_type if is_pk else col_type,
+                                        'AUTOINCREMENT' if is_auto else '')]
 
         cmd += '\t' + ',\n\t'.join(items) + '\n)'
 
