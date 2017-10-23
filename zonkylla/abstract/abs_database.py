@@ -7,7 +7,10 @@
 
 import logging
 import sqlite3
+import sys
 import yaml
+
+DB_VERSION = 1
 
 
 class Database:
@@ -24,6 +27,9 @@ class Database:
             self.schema = yaml.load(stream)
 
         self._create()
+
+        self._check_db_version()
+
         self._clear_table('a_wallet')
         self._clear_table('a_blocked_amounts')
 
@@ -102,6 +108,22 @@ class Database:
     def _clear_table(self, table):
         sql_command = 'DELETE FROM {}'.format(table)
         self.execute(sql_command)
+
+    def _check_db_version(self):
+
+        sql = 'SELECT MAX(db_version) AS mdb_version FROM z_internals'
+        res = self.execute(sql).fetchone()
+
+        if not res['mdb_version']:
+            sql = 'INSERT INTO z_internals (db_version) VALUES (?)'
+            self.execute(sql, [(DB_VERSION)])
+            return
+
+        if res['mdb_version'] != DB_VERSION:
+            self.logger.error(
+                "Old version of database scheme, remove file '%s', please.",
+                self.database)
+            sys.exit(1)
 
     def execute(self, sql, data=None):
         """Executes SQL query with or without data"""
