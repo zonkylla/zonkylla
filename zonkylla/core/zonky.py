@@ -312,7 +312,7 @@ class Zonky:
 
         print('# Update transactions')
         transactions = self.get_transactions(from_dt=last_dt)
-        updated_loan_ids = [trans['loanId'] for trans in transactions]
+        updated_loan_ids = [trans['loanId'] for trans in transactions if trans['loanId']]
         database.insert_transactions(transactions)
 
         print('# Download missing loans')
