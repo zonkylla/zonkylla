@@ -5,12 +5,15 @@
 
 '''Database module'''
 
+import datetime
 import logging
 import sqlite3
 import sys
 import yaml
 
-DB_VERSION = 2
+from zonkylla.core.utils import iso2datetime
+
+DB_VERSION = 3
 
 
 class Database:
@@ -28,10 +31,37 @@ class Database:
 
         self._create()
 
+        # last update
+        sql = 'SELECT MAX(updated) AS m_updated FROM z_internals'
+        res = self.execute(sql).fetchone()
+        last_dt = res['m_updated']
+        self._last_update = iso2datetime(last_dt) if last_dt else None
+
         self._check_db_version()
 
         self._clear_table('a_wallet')
         self._clear_table('a_blocked_amounts')
+
+    @property
+    def last_update(self):
+        '''Last update of database'''
+        return self._last_update
+
+    def _check_db_version(self):
+
+        sql = 'SELECT MAX(db_version) AS mdb_version FROM z_internals'
+        res = self.execute(sql).fetchone()
+
+        if not res['mdb_version']:
+            sql = 'INSERT INTO z_internals (db_version) VALUES (?)'
+            self.execute(sql, [(DB_VERSION)])
+            return
+
+        if res['mdb_version'] != DB_VERSION:
+            self.logger.error(
+                "Old version of database schema, remove file '%s', please.",
+                self.database)
+            sys.exit(1)
 
     def _convert_value(self, table, key, value):
         '''Convert value due to database schema'''
@@ -110,21 +140,10 @@ class Database:
         sql_command = 'DELETE FROM {}'.format(table)
         self.execute(sql_command)
 
-    def _check_db_version(self):
-
-        sql = 'SELECT MAX(db_version) AS mdb_version FROM z_internals'
-        res = self.execute(sql).fetchone()
-
-        if not res['mdb_version']:
-            sql = 'INSERT INTO z_internals (db_version) VALUES (?)'
-            self.execute(sql, [(DB_VERSION)])
-            return
-
-        if res['mdb_version'] != DB_VERSION:
-            self.logger.error(
-                "Old version of database scheme, remove file '%s', please.",
-                self.database)
-            sys.exit(1)
+    def mark_update(self):
+        '''Mark that databse was updated'''
+        sql = 'INSERT INTO z_internals (updated) VALUES (?)'
+        self.execute(sql, [(datetime.datetime.now())])
 
     def execute(self, sql, data=None):
         """Executes SQL query with or without data"""

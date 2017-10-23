@@ -161,6 +161,7 @@ z_internals:
   columns:
     id: int
     db_version: int
+    updated: datetime
   primary_key:
     name: id
     order: asc

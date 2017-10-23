@@ -9,7 +9,6 @@ import ast
 import logging
 
 from zonkylla.abstract.abs_database import Database
-from zonkylla.core.utils import iso2datetime
 
 
 class DatabaseClient:  # pylint: disable=too-many-public-methods
@@ -20,6 +19,15 @@ class DatabaseClient:  # pylint: disable=too-many-public-methods
 
         self.logger = logging.getLogger('zonkylla.core.DatabaseClient')
         self.dbase = Database()
+
+    @property
+    def last_update(self):
+        '''Last update of database'''
+        return self.dbase.last_update
+
+    def mark_update(self):
+        '''Mark that database was updated'''
+        self.dbase.mark_update()
 
     def insert_wallet(self, wallet):
         '''Add user's notifications'''
@@ -48,14 +56,6 @@ class DatabaseClient:  # pylint: disable=too-many-public-methods
     def insert_user_notifications(self, notifications):
         '''Add user's notifications'''
         self.dbase.insert_or_update('a_notifications', notifications)
-
-    def get_last_transaction_date(self):
-        '''Get the datetime of last update'''
-        sql = 'SELECT MAX(transactionDate) FROM a_transactions'
-        result = self.dbase.execute(sql).fetchone()
-        dt_value = result[0]
-
-        return iso2datetime(dt_value) if dt_value else None
 
     def get_loan(self, loan_id):
         '''Returns a loan data'''

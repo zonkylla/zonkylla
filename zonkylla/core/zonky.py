@@ -296,7 +296,8 @@ class Zonky:
     def update(self, database):
         '''Update all data for user from zonky'''
 
-        last_dt = database.get_last_transaction_date()
+        last_update = database.last_update
+        last_dt = last_update - timedelta(days=2) if last_update else None
 
         print('# Download wallet')
         database.insert_wallet([self.get_wallet()])
@@ -326,3 +327,5 @@ class Zonky:
 
         print('# Download user investments')
         database.insert_user_investments(self.get_user_investments())
+
+        database.mark_update()
