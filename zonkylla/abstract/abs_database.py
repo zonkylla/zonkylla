@@ -142,7 +142,10 @@ class Database:
                 # whitelisting only columns in schema
                 if key not in self.schema[table]['columns'].keys():
                     self.logger.warning(
-                        "'%s.%s' present in API response but not in DB schema", table, key)
+                        "'%s.%s' with value '%s' present in API response but not in DB schema",
+                        table,
+                        key,
+                        value)
                     continue
                 cols.append(key)
                 row.append(self._convert_value(table, key, value))
