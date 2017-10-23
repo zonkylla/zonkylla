@@ -12,6 +12,7 @@ a_wallet:
   primary_key:
     name: id
     order: asc
+    autoincrement: False
 
 a_blocked_amounts:
   columns:
@@ -24,6 +25,7 @@ a_blocked_amounts:
   primary_key:
     name: id
     order: asc
+    autoincrement: False
 
 a_transactions:
   columns:
@@ -39,6 +41,7 @@ a_transactions:
   primary_key:
     name: id
     order: asc
+    autoincrement: False
 
 a_loans:
   columns:
@@ -68,6 +71,7 @@ a_loans:
   primary_key:
     name: id
     order: asc
+    autoincrement: False
 
 a_loan_investments:
   columns:
@@ -83,6 +87,7 @@ a_loan_investments:
   primary_key:
     name: id
     order: asc
+    autoincrement: False
 
 a_user_investments:
   columns:
@@ -126,6 +131,7 @@ a_user_investments:
   primary_key:
     name: id
     order: asc
+    autoincrement: False
 
 a_notifications:
   columns:
@@ -137,6 +143,7 @@ a_notifications:
   primary_key:
     name: id
     order: asc
+    autoincrement: False
 
 z_notifications_relations:
   columns:
@@ -147,3 +154,13 @@ z_notifications_relations:
   primary_key:
     name: notificationId
     order: asc
+    autoincrement: False
+
+z_internals:
+  columns:
+    id: int
+    db_version: int
+  primary_key:
+    name: id
+    order: asc
+    autoincrement: True
