@@ -11,12 +11,13 @@ import sqlite3
 import sys
 import yaml
 
+from zonkylla.abstract.singleton_meta import Singleton
 from zonkylla.core.utils import iso2datetime
 
 DB_VERSION = 3
 
 
-class Database:
+class Database(metaclass=Singleton):
     '''Connection with sqlite3 database'''
 
     def __init__(self):
