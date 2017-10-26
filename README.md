@@ -18,7 +18,6 @@ Usage
     ``` bash
     $ virtualenv-3.6 venv
     $ source venv/bin/activate
-    $ pre-commit autoupdate
     $ python setup.py install
     $ zonkylla
     $ deactivate

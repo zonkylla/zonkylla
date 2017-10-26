@@ -7,6 +7,7 @@ Fedora 26
 $ sudo dnf install -y \
     gcc \
     libyaml \
+    libyaml-devel \
     git \
     pandoc \
     python3-virtualenv \
