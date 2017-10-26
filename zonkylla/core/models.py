@@ -8,13 +8,13 @@
 from abc import ABCMeta
 import logging
 
-from .database import DatabaseClient
+from .database import DBModelerClient
 
 
 class AbstractModel(metaclass=ABCMeta):
     '''Abstract model'''
 
-    database = DatabaseClient()
+    database = DBModelerClient()
     logger = logging.getLogger('zonkylla.Models.AbstractModel')
 
     _get_one_database_method_name = None
