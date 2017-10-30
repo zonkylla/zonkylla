@@ -8,3 +8,4 @@ The following people have contributed to the zonkylla project.
     -   Martin Bašti
     -   Petr Blaho
     -   Petr Čech
+    -   Dima Dorofieiev
