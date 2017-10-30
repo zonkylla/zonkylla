@@ -133,6 +133,10 @@ class DBModelerClient(DatabaseClient):
 
     def __init__(self):
         DatabaseClient.__init__(self)
+        if not self.dbase.last_update:
+            self.logger.warning(
+                "Empty database '%s', run 'zonkylla update', please.",
+                self.dbase.db_file)
 
     def get_loans(self, loan_ids=None):
         '''Returns multiple loans data'''
