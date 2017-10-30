@@ -6,6 +6,7 @@ Fedora 26
 ``` bash
 $ sudo dnf install -y \
     gcc \
+    sqlite \
     libyaml \
     libyaml-devel \
     git \
