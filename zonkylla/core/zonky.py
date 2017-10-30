@@ -89,7 +89,7 @@ class AbstractClient(metaclass=ABCMeta):
         )
         self._update_time_lock()
 
-        result = response.json()
+        result = response.json() if response.content else None
 
         if 'X-Total' in response.headers:
             xpage = int(headers['X-Page'])
