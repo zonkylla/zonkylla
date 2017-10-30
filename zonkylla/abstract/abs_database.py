@@ -24,8 +24,8 @@ class Database(metaclass=Singleton):
         '''Init the connection'''
 
         self.logger = logging.getLogger('zonkylla.Abstract.Database')
-        self.database = './zonkylla.db'
-        self.connection = sqlite3.connect(self.database)
+        self._db_file = './zonkylla.db'
+        self.connection = sqlite3.connect(self.db_file)
 
         with open('./data/tables.yaml', 'r') as stream:
             self.schema = yaml.load(stream)
@@ -42,6 +42,11 @@ class Database(metaclass=Singleton):
 
         self._clear_table('a_wallet')
         self._clear_table('a_blocked_amounts')
+
+    @property
+    def db_file(self):
+        '''Last update of database'''
+        return self._db_file
 
     @property
     def last_update(self):
@@ -61,7 +66,7 @@ class Database(metaclass=Singleton):
         if res['mdb_version'] != DB_VERSION:
             self.logger.error(
                 "Old version of database schema, remove file '%s', please.",
-                self.database)
+                self.db_file)
             sys.exit(1)
 
     def _convert_value(self, table, key, value):
