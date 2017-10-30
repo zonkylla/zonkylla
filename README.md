@@ -10,6 +10,11 @@ Preparation
 
 -   [Fedora 26](doc/prepare_f26.md)
 
+After installation configure your local git repository:
+
+    # setup commit template
+    git config commit.template .git-commit-template
+
 Usage
 -----
 
