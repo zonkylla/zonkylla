@@ -12,6 +12,7 @@ $ sudo dnf install -y \
     git \
     pandoc \
     python3-virtualenv \
+    python3-tox \
     python3-autopep8
 ```
 
