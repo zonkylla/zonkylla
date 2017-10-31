@@ -12,6 +12,7 @@ Usage:
   zonkylla.py [-d] transactions
   zonkylla.py [-d] notifications
   zonkylla.py (-h | --help)
+  zonkylla.py interactive
   zonkylla.py --api-version
   zonkylla.py --version
 Options:
@@ -99,6 +100,10 @@ def main():
 
         update_from_zonky(host, username, password)
         return
+
+    if args['interactive']:
+        import IPython
+        IPython.embed()
 
     if args['loans']:
         items = Loan.all()
