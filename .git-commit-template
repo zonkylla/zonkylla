@@ -1,5 +1,10 @@
 COMPONENT: Subject
 
+label: feature
+label: architecture
+label: bug
+label: technical debt
+
 Explanation
 
 Resolves #xx
