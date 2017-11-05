@@ -274,10 +274,24 @@ class Zonky:
         return self._oauth_client.get(
             ('loans', str(loan_id), 'investments'), params, headers)
 
-    def get_user_investments(self):
-        """User's investments"""
+    def get_user_investments(self, time_type=None, from_dt=None):
+        """
+        User's investments
+
+        time_type  Type of from_dt. Default None. Else ('created', 'modified').
+        from_dt    Filter on time. Default None.
+        """
+
+        assert time_type in (None, 'created', 'modified')
+
         params = {}
         headers = {}
+
+        if from_dt and time_type == 'created':
+            params['timeCreated__gte'] = datetime2iso(from_dt)
+
+        if from_dt and time_type == 'modified':
+            params['timeCreated__gte'] = datetime2iso(from_dt)
 
         headers['X-Order'] = 'timeCreated'
 
@@ -326,6 +340,13 @@ class Zonky:
         database.insert_loan_investments(loan_investments)
 
         print('# Download user investments')
-        database.insert_user_investments(self.get_user_investments())
+        database.insert_user_investments(
+            self.get_user_investments(
+                time_type='created',
+                from_dt=last_dt))
+        database.insert_user_investments(
+            self.get_user_investments(
+                time_type='modified',
+                from_dt=last_dt))
 
         database.mark_update()
