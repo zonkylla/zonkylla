@@ -1,7 +1,7 @@
 zonkylla
 ========
 
-[![Build Status](https://travis-ci.org/zonkylla/zonkylla.svg?branch=master)](https://travis-ci.org/zonkylla/zonkylla) [![Code Climate](https://codeclimate.com/github/celestian/zonkylla/badges/gpa.svg)](https://codeclimate.com/github/celestian/zonkylla)
+[![Build Status](https://travis-ci.org/zonkylla/zonkylla.svg?branch=master)](https://travis-ci.org/zonkylla/zonkylla) [![Code Climate](https://codeclimate.com/github/zonkylla/zonkylla/badges/gpa.svg)](https://codeclimate.com/github/zonkylla/zonkylla)
 
 Tool for zonky.cz
 
