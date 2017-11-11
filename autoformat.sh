@@ -2,7 +2,7 @@
 
 # Obtain the path to the work directory
 RELATIVE_SOURCE_PATH=`dirname ${BASH_SOURCE[@]}`
-SOURCE_PATH=`realpath ${RELATIVE_SOURCE_PATH}`
+SOURCE_PATH=`readlink -f ${RELATIVE_SOURCE_PATH}`
 
 # Removing of trailing spaces
 sed --in-place 's/[[:space:]]\+$//' `find ${SOURCE_PATH} -type f -name '*.md'`
