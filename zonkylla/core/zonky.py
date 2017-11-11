@@ -46,7 +46,7 @@ class AbstractClient(metaclass=ABCMeta):
     @property
     def _user_agent(self):
         return 'zonkylla/{} ({})'.format(pkg_resources.require('zonkylla')
-                                         [0].version, 'https://github.com/celestian/zonkylla')
+                                         [0].version, 'https://github.com/zonkylla/zonkylla')
 
     def _wait(self):
         '''Wait until time lock is released'''

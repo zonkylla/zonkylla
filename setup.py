@@ -22,7 +22,7 @@ setup(
     version='0.0.1',
     author='celestian',
     license='GPLv3',
-    url='https://github.com/celestian/zonkylla',
+    url='https://github.com/zonkylla/zonkylla',
 
     packages=find_packages(),
     entry_points={

@@ -19,6 +19,6 @@ $ sudo dnf install -y \
 ### Cloning
 
 ``` bash
-$ git clone https://github.com/celestian/zonkylla.git
+$ git clone https://github.com/zonkylla/zonkylla.git
 $ cd zonkylla
 ```
