@@ -22,4 +22,4 @@ for filename in `find ${SOURCE_PATH} -type f -name '*.md'`; do
 
 done
 
-python3-autopep8 --max-line-length=100 -i -aa -r ${SOURCE_PATH}/zonkylla/
+autopep8 --max-line-length=100 -i -aaa -r ${SOURCE_PATH}/zonkylla/

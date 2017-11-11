@@ -12,8 +12,9 @@ $ sudo dnf install -y \
     git \
     pandoc \
     python3-virtualenv \
-    python3-tox \
-    python3-autopep8
+    python3-tox
+
+$ sudo pip install --upgrade autopep8
 ```
 
 ### Cloning
