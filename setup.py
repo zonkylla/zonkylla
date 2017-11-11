@@ -19,7 +19,7 @@ from setuptools import setup, find_packages
 setup(
     name='zonkylla',
     description='Tool for zonky.cz',
-    version='0.0.1',
+    version='0.0.2',
     author='celestian',
     license='GPLv3',
     url='https://github.com/zonkylla/zonkylla',
