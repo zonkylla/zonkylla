@@ -97,7 +97,7 @@ class Database(metaclass=Singleton):
 
         try:
             return value_convertion[value_type](value)
-        except:
+        except BaseException:
             raise TypeError(table, key, value)
 
     def _create_sql_cmd(self, table):
