@@ -148,6 +148,15 @@ class Database(metaclass=Singleton):
 
     def execute(self, sql, data=None):
         """Executes SQL query with or without data"""
+
+        def dict_factory(cursor, row):
+            '''Dictionary factory for row_factory'''
+            result = {}
+            for idx, col in enumerate(cursor.description):
+                result[col[0]] = row[idx]
+            return result
+        # end of function
+
         if data is None:
             many = False
         elif isinstance(data, list):
@@ -158,7 +167,7 @@ class Database(metaclass=Singleton):
 
         try:
             with self.connection as con:
-                con.row_factory = sqlite3.Row
+                con.row_factory = dict_factory
                 con = con.cursor()
                 self.logger.debug("Executing '%s'", sql)
                 if many:
