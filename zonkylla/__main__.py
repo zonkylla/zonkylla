@@ -7,11 +7,6 @@
 Usage:
   zonkylla.py [--config=CONFIG] [-t] [-d] update <user>
   zonkylla.py [--config=CONFIG] [-d] status
-  zonkylla.py [--config=CONFIG] [-d] loans
-  zonkylla.py [--config=CONFIG] [-d] loan-investments
-  zonkylla.py [--config=CONFIG] [-d] user-investments
-  zonkylla.py [--config=CONFIG] [-d] transactions
-  zonkylla.py [--config=CONFIG] [-d] notifications
   zonkylla.py (-h | --help)
   zonkylla.py [--config=CONFIG] interactive
   zonkylla.py --api-version
@@ -36,7 +31,7 @@ import pkg_resources
 from .core.config import Config
 from .core.zonky import Zonky
 from .update import update_from_zonky
-from .core.models import Loan, LoanInvestment, UserInvestment, Transaction, Notification, Wallet
+from .core.models import Wallet
 
 
 def get_host(args):
@@ -66,16 +61,6 @@ def get_password():
             password = sys.stdin.readline().rstrip()
 
     return password
-
-
-def print_list(items=None):
-    '''Prints content of a list or do nothing'''
-    if items is None:
-        return
-    elif isinstance(items, list):
-        print('---\n'.join([str(item) for item in items]))
-    else:
-        return
 
 
 def main():
@@ -125,26 +110,6 @@ def main():
     if args['interactive']:
         import IPython
         IPython.embed()
-
-    if args['loans']:
-        items = Loan.all()
-        print_list(items)
-
-    if args['loan-investments']:
-        items = LoanInvestment.all()
-        print_list(items)
-
-    if args['user-investments']:
-        items = UserInvestment.all()
-        print_list(items)
-
-    if args['transactions']:
-        items = Transaction.all()
-        print_list(items)
-
-    if args['notifications']:
-        items = Notification.all()
-        print_list(items)
 
 
 if __name__ == '__main__':
