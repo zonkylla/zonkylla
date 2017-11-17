@@ -78,6 +78,11 @@ class AbstractModel(metaclass=ABCMeta):
         self.logger.debug('Initializing %s with ID: %s',
                           type(self).__name__, data['id'])
 
+        # Those checks needs to be done, I don't know how right now.
+        #
+        # database.create_if_not_exist()
+        # database.check_db_version()
+
         self.__dict__ = data
 
     def __str__(self):

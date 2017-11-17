@@ -26,6 +26,10 @@ class DatabaseClient(metaclass=ABCMeta):
         '''Last update of database'''
         return self.dbase.last_update
 
+    def check_db_version(self):
+        '''Check DB version'''
+        self.dbase.check_db_version()
+
     def get_loan(self, loan_id):
         '''Returns a loan data'''
         return self.dbase.get_one('a_loans', loan_id)
@@ -41,6 +45,15 @@ class DBUpdaterClient(DatabaseClient):
     def __init__(self):
         DatabaseClient.__init__(self)
 
+    def create_if_not_exist(self):
+        '''Create DB if not exists'''
+        if not self.dbase.db_exists:
+            self.dbase.create()
+
+    def prepare_for_data_update(self):
+        '''Prepare DB for data update
+           ...it drop some tables if it is necessary
+        '''
         self.dbase.clear_table('a_wallet')
         self.dbase.clear_table('a_blocked_amounts')
 
@@ -136,10 +149,7 @@ class DBModelerClient(DatabaseClient):
 
     def __init__(self):
         DatabaseClient.__init__(self)
-        if not self.dbase.last_update:
-            self.logger.warning(
-                "Empty database '%s', run 'zonkylla update', please.",
-                self.dbase.db_file)
+        self.dbase.can_be_empty = False
 
     def get_loans(self, loan_ids=None):
         '''Returns multiple loans data'''

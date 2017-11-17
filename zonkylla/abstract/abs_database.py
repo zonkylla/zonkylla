@@ -7,10 +7,12 @@
 
 import datetime
 import logging
+from pathlib import Path
 import sqlite3
 import sys
 import yaml
 
+from zonkylla.core.config import Config
 from zonkylla.abstract.singleton_meta import Singleton
 from zonkylla.core.utils import iso2datetime
 
@@ -24,33 +26,58 @@ class Database(metaclass=Singleton):
         '''Init the connection'''
 
         self.logger = logging.getLogger('zonkylla.Abstract.Database')
-        self._db_file = './zonkylla.db'
-        self.connection = sqlite3.connect(self.db_file)
+
+        self._connection = None
+        self._last_update = None
+        self._db_file = ''
+        self._db_exists = None
+        self.can_be_empty = True
 
         with open('./data/tables.yaml', 'r') as stream:
             self.schema = yaml.load(stream)
 
-        self._create()
-
-        # last update
-        sql = 'SELECT MAX(updated) AS m_updated FROM z_internals'
-        res = self.execute(sql).fetchone()
-        last_dt = res['m_updated']
-        self._last_update = iso2datetime(last_dt) if last_dt else None
-
-        self._check_db_version()
+    @property
+    def connection(self):
+        '''DB connection which is established when needed'''
+        if not self._connection:
+            self._connection = sqlite3.connect(self.db_file)
+        return self._connection
 
     @property
     def db_file(self):
         '''Last update of database'''
+        if not self._db_file:
+            self._db_file = Config().db_file
         return self._db_file
+
+    @property
+    def db_exists(self):
+        '''Boolean if database file exists'''
+        if not self._db_exists:
+            self._db_exists = Path(self.db_file).is_file()
+
+        return self._db_exists
 
     @property
     def last_update(self):
         '''Last update of database'''
+        if not self._last_update:
+            sql = 'SELECT MAX(updated) AS m_updated FROM z_internals'
+            res = self.execute(sql).fetchone()
+            last_dt = res['m_updated']
+            self._last_update = iso2datetime(last_dt) if last_dt else None
+
         return self._last_update
 
-    def _check_db_version(self):
+    def _check_if_can_be_empty(self):
+        if not self.can_be_empty:
+            if not self.last_update:
+                self.logger.warning(
+                    "Empty database '%s', run 'zonkylla update', please.",
+                    self.dbase.db_file)
+
+    def check_db_version(self):
+        '''Check the version of DB'''
 
         sql = 'SELECT MAX(db_version) AS mdb_version FROM z_internals'
         res = self.execute(sql).fetchone()
@@ -129,7 +156,7 @@ class Database(metaclass=Singleton):
 
         return cmd
 
-    def _create(self):
+    def create(self):
         '''Prepare the structure if doesn't exist'''
 
         sql_commands = []
@@ -221,6 +248,9 @@ class Database(metaclass=Singleton):
 
     def get_one(self, table, record_id):
         '''Returns data from one row of a table'''
+
+        self._check_if_can_be_empty()
+
         select_sql = '*'
         sql = 'SELECT {} FROM {} WHERE id == {}'.format(
             select_sql, table, record_id)
@@ -228,6 +258,8 @@ class Database(metaclass=Singleton):
 
     def get_all(self, table, record_ids=None):
         '''Returns multiple data from multiple rows of a table'''
+
+        self._check_if_can_be_empty()
 
         select_sql = '*'
         if isinstance(record_ids, list):
