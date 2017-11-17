@@ -5,23 +5,24 @@
 
 """zonkylla
 Usage:
-  zonkylla.py [-t] [-d] update <user>
-  zonkylla.py [-d] status
-  zonkylla.py [-d] loans
-  zonkylla.py [-d] loan-investments
-  zonkylla.py [-d] user-investments
-  zonkylla.py [-d] transactions
-  zonkylla.py [-d] notifications
+  zonkylla.py [-t] [-d] update <user> [--config=CONFIG]
+  zonkylla.py [-d] status [--config=CONFIG]
+  zonkylla.py [-d] loans [--config=CONFIG]
+  zonkylla.py [-d] loan-investments [--config=CONFIG]
+  zonkylla.py [-d] user-investments [--config=CONFIG]
+  zonkylla.py [-d] transactions [--config=CONFIG]
+  zonkylla.py [-d] notifications [--config=CONFIG]
   zonkylla.py (-h | --help)
-  zonkylla.py interactive
+  zonkylla.py interactive [--config=CONFIG]
   zonkylla.py --api-version
   zonkylla.py --version
 Options:
-  -t             Connect to mock server.
-  -d             Debugging output.
-  -h --help      Show this screen.
-  --api-version  Show version of supported zonky.cz API version.
-  --version      Show version.
+  -t                Connect to mock server.
+  -d                Debugging output.
+  --config=CONFIG   Database file [default: ./zonkylla.cfg].
+  -h --help         Show this screen.
+  --api-version     Show version of supported zonky.cz API version.
+  --version         Show version.
 """
 
 
@@ -32,6 +33,7 @@ import logging
 from docopt import docopt
 import pkg_resources
 
+from .core.config import Config
 from .core.zonky import Zonky
 from .update import update_from_zonky
 from .core.models import Loan, LoanInvestment, UserInvestment, Transaction, Notification, Wallet
@@ -85,6 +87,8 @@ def main():
         version=pkg_resources.require('zonkylla')[0].version)
 
     host = get_host(args)
+
+    Config(config_file=args['--config'])
 
     if args['--api-version']:
         zonky = Zonky(host)
