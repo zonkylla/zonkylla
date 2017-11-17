@@ -5,10 +5,13 @@
 
 '''Models module'''
 
-from abc import ABCMeta
+from abc import ABCMeta, abstractproperty
 import logging
 
+from dateutil.relativedelta import relativedelta
+
 from .database import DBModelerClient
+from .utils import iso2datetime
 
 
 class AbstractModel(metaclass=ABCMeta):
@@ -85,7 +88,35 @@ class AbstractModel(metaclass=ABCMeta):
         return result
 
 
-class Loan(AbstractModel):
+class InvestmentMixin(metaclass=ABCMeta):
+    '''Attributes needed for investment'''
+
+    @property
+    @abstractproperty
+    def principal_to_pay(self):
+        '''Amount of Principal to be paid'''
+        raise NotImplementedError
+
+    @property
+    @abstractproperty
+    def interest_rate(self):
+        '''Interest Rate'''
+        raise NotImplementedError
+
+    @property
+    @abstractproperty
+    def remaining_months(self):
+        '''Remaining Months of Investment'''
+        raise NotImplementedError
+
+    @property
+    @abstractproperty
+    def next_payment_date(self):
+        '''Next Payment Date for Investment'''
+        raise NotImplementedError
+
+
+class Loan(AbstractModel, InvestmentMixin):
     '''Loan model'''
 
     _get_one_database_method_name = 'get_loan'
@@ -94,6 +125,22 @@ class Loan(AbstractModel):
     def __init__(self, data):
         '''Init Loan using id'''
         AbstractModel.__init__(self, data)
+
+    @property
+    def principal_to_pay(self):
+        return self.amount
+
+    @property
+    def interest_rate(self):
+        return self.interestRate
+
+    @property
+    def remaining_months(self):
+        return self.termInMonths
+
+    @property
+    def next_payment_date(self):
+        return iso2datetime(self.deadline) + relativedelta(weeks=5)
 
 
 class LoanInvestment(AbstractModel):
@@ -107,7 +154,7 @@ class LoanInvestment(AbstractModel):
         AbstractModel.__init__(self, data)
 
 
-class UserInvestment(AbstractModel):
+class UserInvestment(AbstractModel, InvestmentMixin):
     '''UserInvestment model'''
 
     _get_one_database_method_name = 'get_user_investment'
@@ -116,6 +163,22 @@ class UserInvestment(AbstractModel):
     def __init__(self, data):
         '''Init UserInvestment using id'''
         AbstractModel.__init__(self, data)
+
+    @property
+    def principal_to_pay(self):
+        return self.remainingPrincipal
+
+    @property
+    def interest_rate(self):
+        return self.interestRate
+
+    @property
+    def remaining_months(self):
+        return self.remainingMonths
+
+    @property
+    def next_payment_date(self):
+        return self.nextPaymentDate
 
 
 class Transaction(AbstractModel):
