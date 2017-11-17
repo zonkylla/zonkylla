@@ -5,15 +5,15 @@
 
 """zonkylla
 Usage:
-  zonkylla.py [-t] [-d] update <user> [--config=CONFIG]
-  zonkylla.py [-d] status [--config=CONFIG]
-  zonkylla.py [-d] loans [--config=CONFIG]
-  zonkylla.py [-d] loan-investments [--config=CONFIG]
-  zonkylla.py [-d] user-investments [--config=CONFIG]
-  zonkylla.py [-d] transactions [--config=CONFIG]
-  zonkylla.py [-d] notifications [--config=CONFIG]
+  zonkylla.py [--config=CONFIG] [-t] [-d] update <user>
+  zonkylla.py [--config=CONFIG] [-d] status
+  zonkylla.py [--config=CONFIG] [-d] loans
+  zonkylla.py [--config=CONFIG] [-d] loan-investments
+  zonkylla.py [--config=CONFIG] [-d] user-investments
+  zonkylla.py [--config=CONFIG] [-d] transactions
+  zonkylla.py [--config=CONFIG] [-d] notifications
   zonkylla.py (-h | --help)
-  zonkylla.py interactive [--config=CONFIG]
+  zonkylla.py [--config=CONFIG] interactive
   zonkylla.py --api-version
   zonkylla.py --version
 Options:
