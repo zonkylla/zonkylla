@@ -6,6 +6,7 @@
 """zonkylla
 Usage:
   zonkylla.py [-t] [-d] update <user>
+  zonkylla.py [-d] status
   zonkylla.py [-d] loans
   zonkylla.py [-d] loan-investments
   zonkylla.py [-d] user-investments
@@ -33,7 +34,7 @@ import pkg_resources
 
 from .core.zonky import Zonky
 from .update import update_from_zonky
-from .core.models import Loan, LoanInvestment, UserInvestment, Transaction, Notification
+from .core.models import Loan, LoanInvestment, UserInvestment, Transaction, Notification, Wallet
 
 
 def get_host(args):
@@ -100,6 +101,22 @@ def main():
 
         update_from_zonky(host, username, password)
         return
+
+    if args['status']:
+
+        wallet = Wallet.all()
+        if not wallet:
+            return
+
+        print(wallet[0])
+
+        print('#', ':' * 79)
+        print('#', ':: Status')
+        print('#', ':' * 79)
+        print('#', ':: | Available Balance :: {} Kč '.format(wallet[0].availableBalance))
+        print('#', ':: | Blocked Balance   :: {} Kč '.format(wallet[0].blockedBalance))
+        print('#', ':: | Credit Sum        :: {} Kč '.format(wallet[0].creditSum))
+        print('#', ':' * 79)
 
     if args['interactive']:
         import IPython
