@@ -172,3 +172,11 @@ class DBModelerClient(DatabaseClient):
     def get_notifications(self, notification_ids=None):
         '''Returns multiple notifications data'''
         return self.dbase.get_all('a_notifications', notification_ids)
+
+    def get_wallet(self, wallet_id):
+        '''Returns a wallet data'''
+        return self.dbase.get_one('a_wallet', wallet_id)
+
+    def get_wallets(self, wallet_ids=None):
+        '''Returns multiple wallet data'''
+        return self.dbase.get_all('a_wallet', wallet_ids)
