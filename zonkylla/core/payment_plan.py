@@ -5,7 +5,6 @@
 
 '''Payment plan module'''
 
-from datetime import datetime
 from dateutil.relativedelta import relativedelta
 
 from .utils import iso2datetime
@@ -14,14 +13,11 @@ from .utils import iso2datetime
 class PaymentPlan():
     '''Payment plan class'''
 
-    def __init__(self, amount, interest_rate, term_in_months, start_date=None):
-        if start_date is None:
-            start_date = datetime.now()
-
-        self._amount = amount
-        self._interest_rate = interest_rate
-        self._term_in_months = term_in_months
-        self._start_date = iso2datetime(start_date)
+    def __init__(self, investment):
+        self._amount = investment.principal_to_pay
+        self._interest_rate = investment.interest_rate
+        self._term_in_months = investment.remaining_months
+        self._start_date = iso2datetime(investment.next_payment_date)
 
     @property
     def amount(self):
