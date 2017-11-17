@@ -201,3 +201,14 @@ class Notification(AbstractModel):
     def __init__(self, data):
         '''Init Notification using id'''
         AbstractModel.__init__(self, data)
+
+
+class Wallet(AbstractModel):
+    '''Wallet model'''
+
+    _get_one_database_method_name = 'get_wallet'
+    _get_all_database_method_name = 'get_wallets'
+
+    def __init__(self, data):
+        '''Init Wallet using id'''
+        AbstractModel.__init__(self, data)
