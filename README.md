@@ -21,11 +21,13 @@ Usage
 -   Run
 
     ``` bash
-    $ virtualenv-3.6 venv
-    $ source venv/bin/activate
-    $ python setup.py install
-    $ zonkylla
-    $ deactivate
+    virtualenv-3.6 venv
+    source venv/bin/activate
+    python setup.py install
+
+    zonkylla
+
+    deactivate
     ```
 
 -   Testing run with mock
