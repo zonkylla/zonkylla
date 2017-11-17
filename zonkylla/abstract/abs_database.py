@@ -74,7 +74,7 @@ class Database(metaclass=Singleton):
             if not self.last_update:
                 self.logger.warning(
                     "Empty database '%s', run 'zonkylla update', please.",
-                    self.dbase.db_file)
+                    self.db_file)
 
     def check_db_version(self):
         '''Check the version of DB'''
