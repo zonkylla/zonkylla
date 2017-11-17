@@ -75,8 +75,7 @@ class AbstractModel(metaclass=ABCMeta):
         self.logger.debug('Initializing %s with ID: %s',
                           type(self).__name__, data['id'])
 
-        for key in list(data.keys()):
-            setattr(self, key, data[key])
+        self.__dict__ = data
 
     def __str__(self):
         result = ''
