@@ -9,6 +9,8 @@ def step_impl(context):
 
 @when(u'we run "{command}"')
 def step_impl(context, command):
+    if context.cli_options:
+        command = command + ' ' + context.cli_options
     result = subprocess.run(command.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     print(result.stdout.decode('utf-8'))
     print(result.stderr.decode('utf-8'), file=sys.stderr)
