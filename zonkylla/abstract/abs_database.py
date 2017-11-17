@@ -40,9 +40,6 @@ class Database(metaclass=Singleton):
 
         self._check_db_version()
 
-        self._clear_table('a_wallet')
-        self._clear_table('a_blocked_amounts')
-
     @property
     def db_file(self):
         '''Last update of database'''
@@ -142,7 +139,8 @@ class Database(metaclass=Singleton):
         for sql_command in sql_commands:
             self.execute(sql_command)
 
-    def _clear_table(self, table):
+    def clear_table(self, table):
+        '''Clear given table'''
         sql_command = 'DELETE FROM {}'.format(table)
         self.execute(sql_command)
 

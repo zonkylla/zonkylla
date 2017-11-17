@@ -41,6 +41,9 @@ class DBUpdaterClient(DatabaseClient):
     def __init__(self):
         DatabaseClient.__init__(self)
 
+        self.dbase.clear_table('a_wallet')
+        self.dbase.clear_table('a_blocked_amounts')
+
     def mark_update(self):
         '''Mark that database was updated'''
         self.dbase.mark_update()
