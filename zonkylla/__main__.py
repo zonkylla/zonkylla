@@ -5,16 +5,16 @@
 
 """zonkylla
 Usage:
-  zonkylla.py [--config=CONFIG] [-t] [-d] update <user>
+  zonkylla.py [--config=CONFIG] [-d] [-t] update <user>
   zonkylla.py [--config=CONFIG] [-d] status
   zonkylla.py (-h | --help)
   zonkylla.py [--config=CONFIG] interactive
   zonkylla.py --api-version
   zonkylla.py --version
 Options:
-  -t                Connect to mock server.
-  -d                Debugging output.
   --config=CONFIG   Configuration file [default: ./zonkylla.conf].
+  -d                Debugging output.
+  -t                Connect to mock server.
   -h --help         Show this screen.
   --api-version     Show version of supported zonky.cz API version.
   --version         Show version.
