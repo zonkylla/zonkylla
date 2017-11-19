@@ -40,7 +40,6 @@ class Config(metaclass=Singleton):
                         "KeyError [%s] in configuration file '%s' occured!",
                         err, value)
 
-
     @property
     def db_file(self):
         '''Database file'''

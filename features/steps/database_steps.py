@@ -8,6 +8,7 @@
 from behave import given  # pylint: disable=no-name-in-module
 
 from zonkylla.core.config import Config
+from zonkylla.core.database import DBCreator
 from zonkylla.core.database import DBUpdaterClient
 
 
@@ -16,8 +17,11 @@ def step_impl(context):
     '''Save data into wallet in database'''
 
     Config(config_file=context.scenario_config_file)
+
+    empty_database = DBCreator()
+    empty_database.create_if_not_exist()
+
     database = DBUpdaterClient()
-    database.create_if_not_exist()
     for row in context.table:
         database.insert_wallet([{
             'availableBalance': row['availableBalance'],

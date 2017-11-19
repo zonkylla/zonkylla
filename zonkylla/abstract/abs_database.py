@@ -53,7 +53,7 @@ class Database(metaclass=Singleton):
 
     @property
     def db_file(self):
-        '''Last update of database'''
+        '''DB file'''
         if not self._db_file:
             self._db_file = Config().db_file
         return self._db_file
@@ -87,8 +87,14 @@ class Database(metaclass=Singleton):
     def check_db_version(self):
         '''Check the version of DB'''
 
-        sql = 'SELECT MAX(db_version) AS mdb_version FROM z_internals'
-        res = self.execute(sql).fetchone()
+        try:
+            sql = 'SELECT MAX(db_version) AS mdb_version FROM z_internals'
+            res = self.execute(sql).fetchone()
+        except sqlite3.OperationalError:
+            self.logger.error(
+                "Invalid database structure, remove file '%s', please.",
+                self.db_file)
+            sys.exit(1)
 
         if not res['mdb_version']:
             sql = 'INSERT INTO z_internals (db_version) VALUES (?)'
@@ -165,7 +171,7 @@ class Database(metaclass=Singleton):
         return cmd
 
     def create(self):
-        '''Prepare the structure if doesn't exist'''
+        '''Prepare the structure'''
 
         sql_commands = []
         for table in self.schema:
@@ -173,6 +179,12 @@ class Database(metaclass=Singleton):
 
         for sql_command in sql_commands:
             self.execute(sql_command)
+
+        sql = 'INSERT INTO z_internals (db_version) VALUES (?)'
+        self.execute(sql, [(DB_VERSION)])
+
+        print('Database was created within file \'{}\'.'.format(self.db_file))
+        print('Schema version is {}.'.format(DB_VERSION))
 
     def clear_table(self, table):
         '''Clear given table'''

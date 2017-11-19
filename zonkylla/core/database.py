@@ -7,6 +7,7 @@
 
 from abc import ABCMeta
 import ast
+import sys
 import logging
 
 from zonkylla.abstract.abs_database import Database
@@ -26,6 +27,10 @@ class DatabaseClient(metaclass=ABCMeta):
         '''Last update of database'''
         return self.dbase.last_update
 
+    def check_if_exists(self):
+        '''Check if DB exists'''
+        return self.dbase.db_exists
+
     def check_db_version(self):
         '''Check DB version'''
         self.dbase.check_db_version()
@@ -39,16 +44,31 @@ class DatabaseClient(metaclass=ABCMeta):
         return self.dbase.get_all('a_loan_investments', loan_investment_ids)
 
 
+class DBCreator(DatabaseClient):
+    '''Creator of database'''
+
+    def __init__(self):
+        DatabaseClient.__init__(self)
+        self.check_if_exists()
+
+    def create_if_not_exist(self):
+        '''Create DB if not exists'''
+        if self.dbase.db_exists:
+            self.dbase.check_db_version()
+        else:
+            self.dbase.create()
+
+
 class DBUpdaterClient(DatabaseClient):
     '''Updater database client'''
 
     def __init__(self):
         DatabaseClient.__init__(self)
-
-    def create_if_not_exist(self):
-        '''Create DB if not exists'''
-        if not self.dbase.db_exists:
-            self.dbase.create()
+        if not self.check_if_exists():
+            self.logger.warning(
+                "Missing database file '%s', run 'zonkylla init', please.",
+                self.dbase.db_file)
+            sys.exit(1)
 
     def prepare_for_data_update(self):
         '''Prepare DB for data update

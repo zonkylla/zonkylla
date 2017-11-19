@@ -4,13 +4,16 @@
 # Copyright (C) 2017  zonkylla Contributors see COPYING for license
 
 """zonkylla
+
 Usage:
+  zonkylla.py [--config=CONFIG] [-d] init
   zonkylla.py [--config=CONFIG] [-d] [-t] update <user>
   zonkylla.py [--config=CONFIG] [-d] status
   zonkylla.py (-h | --help)
   zonkylla.py [--config=CONFIG] interactive
   zonkylla.py --api-version
   zonkylla.py --version
+
 Options:
   --config=CONFIG   Configuration file [default: ./zonkylla.conf].
   -d                Debugging output.
@@ -30,6 +33,7 @@ import pkg_resources
 
 from .core.config import Config
 from .core.zonky import Zonky
+from .core.database import DBCreator
 from .update import update_from_zonky
 from .core.models import Wallet
 
@@ -40,7 +44,7 @@ def get_host(args):
     """
 
     if args['-t']:
-        host = 'https://private-anon-212b7e4eaf-zonky.apiary-mock.com'
+        host = 'https://private-anon-558d193ba7-zonky.apiary-mock.com'
     else:
         host = 'https://api.zonky.cz'
     return host
@@ -82,6 +86,11 @@ def main():
 
     if args['-d']:
         logging.basicConfig(level=logging.DEBUG)
+
+    if args['init']:
+        database = DBCreator()
+        database.create_if_not_exist()
+        return
 
     if args['update']:
 

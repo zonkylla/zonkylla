@@ -310,9 +310,6 @@ class Zonky:
     def update(self, database):
         '''Update all data for user from zonky'''
 
-        database.create_if_not_exist()
-        database.check_db_version()
-
         last_update = database.last_update
         last_dt = last_update - timedelta(days=2) if last_update else None
 
