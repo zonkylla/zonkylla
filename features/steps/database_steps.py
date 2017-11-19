@@ -9,6 +9,7 @@ from zonkylla.core.config import Config
 from zonkylla.core.database import DBUpdaterClient
 from zonkylla.core.models import Wallet
 
+
 @given(u'we have this data in wallet')
 def step_impl(context):
     Config(config_file=context.config_file)
