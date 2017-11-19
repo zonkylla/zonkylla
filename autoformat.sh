@@ -24,3 +24,6 @@ for filename in `find ${SOURCE_PATH} -type f -name '*.md'`; do
 done
 
 autopep8 --max-line-length=100 -i -aaa -r ${SOURCE_PATH}/zonkylla/
+autopep8 --max-line-length=100 -i -aaa -r ${SOURCE_PATH}/features/
+
+autopep8 --max-line-length=100 -i -aaa ${SOURCE_PATH}/setup.py
