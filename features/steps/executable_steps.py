@@ -1,3 +1,8 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+#
+# Copyright (C) 2017  zonkylla Contributors see COPYING for license
+
 from behave import given, when, then, step
 import shutil
 import subprocess
