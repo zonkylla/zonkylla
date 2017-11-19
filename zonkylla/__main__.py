@@ -14,7 +14,7 @@ Usage:
 Options:
   -t                Connect to mock server.
   -d                Debugging output.
-  --config=CONFIG   Configuration file [default: ./zonkylla.cfg].
+  --config=CONFIG   Configuration file [default: ./zonkylla.conf].
   -h --help         Show this screen.
   --api-version     Show version of supported zonky.cz API version.
   --version         Show version.
