@@ -13,6 +13,8 @@
 # easy_install [-U] dist/<package-name>.egg
 # easy_install [-U] <package-name> -i http://path/to/private/index
 
+'''Zonkylla's Setup script'''
+
 from setuptools import setup, find_packages
 
 
