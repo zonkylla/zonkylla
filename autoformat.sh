@@ -6,6 +6,7 @@ SOURCE_PATH=`readlink -f ${RELATIVE_SOURCE_PATH}`
 
 # Removing of trailing spaces
 sed --in-place 's/[[:space:]]\+$//' `find ${SOURCE_PATH} -type f -name '*.md'`
+sed --in-place 's/[[:space:]]\+$//' `find ${SOURCE_PATH} -type f -name '*.feature'`
 
 # Reformat all markdown files to markdown_github
 for filename in `find ${SOURCE_PATH} -type f -name '*.md'`; do
