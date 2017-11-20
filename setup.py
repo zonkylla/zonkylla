@@ -32,6 +32,7 @@ setup(
             'zonkylla = zonkylla.__main__:main'
         ]
     },
+    data_files=[('zonkylla/data', ['data/tables.yaml'])],
     install_requires=[
         'docopt',
         'requests',
