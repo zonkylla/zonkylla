@@ -17,7 +17,7 @@ class Config(metaclass=Singleton):
     def __init__(self, **kwargs):
         '''Init the configuration'''
 
-        self.logger = logging.getLogger('zonkylla.Abstract.Database')
+        self.logger = logging.getLogger('zonkylla.Core.Config')
 
         self.config = configparser.ConfigParser()
 
