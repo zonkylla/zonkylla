@@ -32,10 +32,12 @@ def step_impl(context, command):
 @then(u'we see "{text}" on stdout')
 def step_impl(context, text):
     '''Check if text is on stdout'''
-    assert text in context.stdout_capture.getvalue()
+    if 'stdout_capture' in context.__dict__:
+        assert text in context.stdout_capture.getvalue()
 
 
 @then(u'we see "{text}" on stderr')
 def step_impl(context, text):
     '''Check if text is on stderr'''
-    assert text in context.stderr_capture.getvalue()
+    if 'stderr_capture' in context.__dict__:
+        assert text in context.stderr_capture.getvalue()
