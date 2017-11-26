@@ -5,6 +5,7 @@
 
 '''Executable steps'''
 
+import os
 import shutil
 import subprocess
 import sys
@@ -19,11 +20,21 @@ def step_impl(context):  # pylint: disable=unused-argument
     assert shutil.which('zonkylla') is not None
 
 
+@given(u'we have zonkylla configured properly')
+def step_impl(context):
+    '''Configure zonkylla'''
+
+    target_config_file = os.path.join(context.scenario_test_dir, 'zonkylla.conf')
+    shutil.copyfile(context.base_config_file, target_config_file)
+
+
 @when(u'we run "{command}"')
 def step_impl(context, command):
     '''Run command and print outputs'''
+
     if context.cli_options:
         command = command + ' ' + context.cli_options
+
     result = subprocess.run(command.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     print(result.stdout.decode('utf-8'))
     print(result.stderr.decode('utf-8'), file=sys.stderr)

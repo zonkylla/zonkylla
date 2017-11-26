@@ -14,7 +14,8 @@ from zonkylla.core.database import DBUpdaterClient
 @given(u'we have this data in wallet')
 def step_impl(context):
     '''Save data into wallet in database'''
-    Config(config_file=context.config_file)
+
+    Config(config_file=context.scenario_config_file)
     database = DBUpdaterClient()
     database.create_if_not_exist()
     for row in context.table:

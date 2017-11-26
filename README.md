@@ -30,6 +30,12 @@ Usage
     deactivate
     ```
 
+-   Behave testing with debug
+
+    ``` bash
+    ZONKYLLA_BEHAVE_DEBUG=1 tox -e py36-behave
+    ```
+
 -   Testing run with mock
 
     ``` bash
