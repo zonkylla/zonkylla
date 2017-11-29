@@ -256,9 +256,17 @@ class Zonky:
         return self._oauth_client.get(
             ('users', 'me', 'wallet', 'transactions'), params, headers)
 
-    def get_loans(self):
+    def get_loans(self, from_dt=None):
         """List of loans on zonky"""
-        return self._client.get(('loans', 'marketplace'))
+        params = {}
+        headers = {}
+
+        if from_dt:
+            params['datePublished__gte'] = datetime2iso(from_dt)
+
+        headers['X-Order'] = 'datePublished'
+
+        return self._client.get(('loans', 'marketplace'), params, headers)
 
     def get_loan(self, loan_id):
         """Detail of loan"""
