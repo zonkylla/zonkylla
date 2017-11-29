@@ -10,7 +10,7 @@ Usage:
   zonkylla.py [--config=CONFIG] [-d] [-t] update <user>
   zonkylla.py [--config=CONFIG] [-d] status
   zonkylla.py (-h | --help)
-  zonkylla.py [--config=CONFIG] interactive
+  zonkylla.py [--config=CONFIG] [-d] interactive
   zonkylla.py --api-version
   zonkylla.py --version
 
