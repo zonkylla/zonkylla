@@ -7,6 +7,8 @@
 
 import configparser
 import logging
+from pathlib import Path
+import sys
 
 from zonkylla.abstract.singleton_meta import Singleton
 
@@ -19,15 +21,27 @@ class Config(metaclass=Singleton):
 
         self.logger = logging.getLogger('zonkylla.Core.Config')
 
+        self._db_file = None
+
         self.config = configparser.ConfigParser()
 
-        readed = False
         for name, value in kwargs.items():
             if name == 'config_file':
-                self.config.read(value)
-                readed = True
+                if not Path(value).is_file():
+                    self.logger.critical(
+                        "Error: Configuration file '%s' doesn't exist!", value)
+                    sys.exit(1)
 
-        if readed:
-            self.db_file = self.config['zonkylla']['db_file']
-        else:
-            self.db_file = None
+                try:
+                    self.config.read(value)
+                    self._db_file = self.config['zonkylla']['db_file']
+                except KeyError as err:
+                    self.logger.error(
+                        "KeyError [%s] in configuration file '%s' occured!",
+                        err, value)
+
+
+    @property
+    def db_file(self):
+        '''Database file'''
+        return self._db_file

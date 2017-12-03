@@ -5,6 +5,7 @@
 
 '''Database module'''
 
+import os
 import datetime
 import logging
 from pathlib import Path
@@ -27,14 +28,21 @@ class Database(metaclass=Singleton):
 
         self.logger = logging.getLogger('zonkylla.Abstract.Database')
 
+        self._schema = None
         self._connection = None
         self._last_update = None
         self._db_file = ''
         self._db_exists = None
         self.can_be_empty = True
 
-        with open('./data/tables.yaml', 'r') as stream:
-            self.schema = yaml.load(stream)
+    @property
+    def schema(self):
+        '''Database schema'''
+        if not self._schema:
+            schema_file = os.path.join(sys.prefix, 'zonkylla', 'data', 'tables.yaml')
+            with open(schema_file, 'r') as stream:
+                self._schema = yaml.load(stream)
+        return self._schema
 
     @property
     def connection(self):
