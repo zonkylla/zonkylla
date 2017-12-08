@@ -21,11 +21,12 @@ Usage
 -   Run
 
     ``` bash
-    virtualenv-3.6 venv
-    source venv/bin/activate
-    python setup.py install
+    source .tox/py36/bin/activate
 
     zonkylla
+
+    # if you need reinstall zonkylla, run this in non-tox console
+    tox --notest -r
 
     deactivate
     ```
