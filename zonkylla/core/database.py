@@ -131,7 +131,9 @@ class DBUpdaterClient(DatabaseClient):
             'LOAN_SUCCESS',
             'LOAN_PREPAYMENT',
             'LOAN_DELAY_INVESTOR',
-            'BORROWER_HEAL']
+            'BORROWER_HEAL',
+            'LOAN_PENALTY_PAID',
+        ]
 
         missing_data = self.missing_user_notifications_relations()
 
